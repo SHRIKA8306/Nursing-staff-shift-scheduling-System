@@ -1,0 +1,2557 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   GLOBAL LOGIN PAGE
+========================================================= */
+
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+
+  background:
+    linear-gradient(
+      110deg,
+      #111f3b 0%,
+      #193454 50%,
+      #172b4c 100%
+    );
+
+  color: white;
+}
+
+
+/* =========================================================
+   BACKGROUND DECORATIONS
+========================================================= */
+
+.background-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.circle-one {
+  width: 560px;
+  height: 560px;
+
+  left: -190px;
+  top: -220px;
+
+  background: rgba(21, 55, 91, 0.32);
+}
+
+.circle-two {
+  width: 620px;
+  height: 620px;
+
+  right: 440px;
+  bottom: -420px;
+
+  background: rgba(17, 75, 106, 0.28);
+}
+
+.background-shape {
+  position: absolute;
+  pointer-events: none;
+}
+
+.shape-one {
+  width: 360px;
+  height: 500px;
+
+  left: 390px;
+  bottom: -180px;
+
+  border-radius: 180px 180px 0 0;
+
+  background: rgba(17, 87, 117, 0.18);
+
+  transform: rotate(-10deg);
+}
+
+
+/* =========================================================
+   LEFT HERO SECTION
+========================================================= */
+
+.hero-section {
+  width: 55%;
+  min-height: 100vh;
+
+  padding: 60px 0 60px 80px;
+
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 50px;
+  height: 50px;
+
+  border-radius: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2374ef,
+      #12b8c8
+    );
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.brand-text h2 {
+  margin: 0;
+
+  font-size: 23px;
+  line-height: 1.1;
+
+  font-weight: 700;
+}
+
+.brand-text p {
+  margin: 5px 0 0;
+
+  color: #64b8ff;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.hero-content {
+  margin-top: 82px;
+}
+
+.hero-content h1 {
+  margin: 0;
+
+  font-size: clamp(58px, 5vw, 76px);
+
+  line-height: 0.99;
+
+  letter-spacing: -2.5px;
+
+  font-weight: 800;
+
+  max-width: 700px;
+}
+
+.hero-content h1 span {
+  display: block;
+
+  background:
+    linear-gradient(
+      90deg,
+      #4ea6f5,
+      #27d0c2
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+  margin-top: 38px;
+
+  font-size: 19px;
+
+  line-height: 1.9;
+
+  color: #a5bddb;
+
+  max-width: 700px;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.stats-container {
+  display: flex;
+
+  gap: 31px;
+
+  margin-top: auto;
+
+  padding-bottom: 8px;
+}
+
+.stats-card {
+  width: 168px;
+  height: 106px;
+
+  border-radius: 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14, 39, 72, 0.96),
+      rgba(17, 44, 76, 0.92)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.03);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.stats-value {
+  font-size: 30px;
+
+  line-height: 1;
+
+  font-weight: 800;
+
+  color: white;
+}
+
+.stats-label {
+  margin-top: 9px;
+
+  font-size: 14px;
+
+  color: #91b1d3;
+}
+
+
+/* =========================================================
+   RIGHT LOGIN SECTION
+========================================================= */
+
+.login-section {
+  width: 45%;
+
+  min-height: 100vh;
+
+  padding: 22px 80px 22px 0;
+
+  position: relative;
+
+  z-index: 5;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.login-card {
+  width: 560px;
+
+  min-height: 796px;
+
+  padding: 52px 50px;
+
+  border-radius: 30px;
+
+  background: #f8f9fb;
+
+  color: #142846;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =========================================================
+   LOGIN HEADER
+========================================================= */
+
+.login-header h2 {
+  margin: 0;
+
+  font-size: 31px;
+
+  line-height: 1.2;
+
+  font-weight: 800;
+
+  color: #142846;
+}
+
+.login-header p {
+  margin: 8px 0 0;
+
+  color: #657c98;
+
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   ROLE SELECTOR
+========================================================= */
+
+.role-selector {
+  margin-top: 48px;
+
+  height: 48px;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 6px;
+
+  padding: 0;
+
+  background: transparent;
+}
+
+.role-button {
+  border: none;
+
+  background: transparent;
+
+  border-radius: 12px;
+
+  color: #617893;
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  transition: 0.2s ease;
+}
+
+.role-button.active {
+  background: white;
+
+  color: #2a5fe5;
+
+  box-shadow:
+    0 4px 10px rgba(31, 51, 74, 0.12);
+}
+
+.role-button:hover {
+  color: #2563eb;
+}
+
+.role-icon {
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   LOGIN FORM
+========================================================= */
+
+.login-card form {
+  margin-top: 35px;
+}
+
+.form-group {
+  margin-bottom: 26px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  color: #183454;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper {
+  height: 56px;
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+
+  height: 100%;
+
+  padding: 0 48px 0 50px;
+
+  border: 1px solid #dbe3ed;
+
+  border-radius: 14px;
+
+  outline: none;
+
+  background: #f9fafc;
+
+  color: #183454;
+
+  font-size: 16px;
+
+  font-family: inherit;
+
+  transition: 0.2s ease;
+}
+
+.input-wrapper input::placeholder {
+  color: #8799ad;
+}
+
+.input-wrapper input:focus {
+  border-color: #7aa6f5;
+
+  background: white;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.input-icon {
+  position: absolute;
+
+  left: 17px;
+
+  z-index: 2;
+
+  color: #91a7bf;
+}
+
+.password-toggle {
+  position: absolute;
+
+  right: 15px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: none;
+
+  background: transparent;
+
+  color: #91a7bf;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* =========================================================
+   FORM OPTIONS
+========================================================= */
+
+.form-options {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 4px;
+}
+
+.remember-me {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #415c79;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.remember-me input {
+  appearance: none;
+
+  width: 20px;
+
+  height: 20px;
+
+  border: 1.5px solid #8797aa;
+
+  border-radius: 4px;
+
+  background: white;
+
+  cursor: pointer;
+
+  position: relative;
+}
+
+.remember-me input:checked {
+  background: #2563eb;
+
+  border-color: #2563eb;
+}
+
+.remember-me input:checked::after {
+  content: "✓";
+
+  position: absolute;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  left: 4px;
+
+  top: 0;
+}
+
+.forgot-password {
+  border: none;
+
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   SIGN IN BUTTON
+========================================================= */
+
+.sign-in-button {
+  width: 100%;
+
+  height: 54px;
+
+  margin-top: 28px;
+
+  border: none;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #2b61e6,
+      #285de0
+    );
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.25);
+
+  transition: 0.2s ease;
+}
+
+.sign-in-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 22px rgba(37, 99, 235, 0.32);
+}
+
+.sign-in-button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   REGISTER
+========================================================= */
+
+.register-section {
+  margin-top: 34px;
+
+  text-align: center;
+}
+
+.register-section p {
+  margin: 0;
+
+  color: #607793;
+
+  font-size: 16px;
+}
+
+.register-section button {
+  border: none;
+
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  margin-left: 4px;
+}
+
+
+/* =========================================================
+   DEMO BOX
+========================================================= */
+
+.demo-box {
+  margin-top: 32px;
+
+  min-height: 70px;
+
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #f0f5fa;
+
+  color: #49627d;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 4px;
+}
+
+.demo-box strong {
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   COOKIE BUTTON
+========================================================= */
+
+.cookie-button {
+  position: fixed;
+
+  left: 13px;
+
+  bottom: 13px;
+
+  z-index: 50;
+
+  height: 43px;
+
+  padding: 0 12px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: white;
+
+  color: #9aa6b4;
+
+  font-size: 13px;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   HELP BUTTON
+========================================================= */
+
+.help-button {
+  position: fixed;
+
+  right: 10px;
+
+  bottom: 8px;
+
+  z-index: 50;
+
+  width: 41px;
+
+  height: 41px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: white;
+
+  color: #26384c;
+
+  font-size: 23px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   =========================================================
+   NURSE PORTAL - MY SCHEDULE
+   =========================================================
+   ========================================================= */
+
+
+/* =========================================================
+   NURSE LAYOUT
+========================================================= */
+
+.nurse-layout {
+  min-height: 100vh;
+
+  width: 100%;
+
+  display: flex;
+
+  background: #f7f9fc;
+
+  color: #172b4d;
+}
+
+
+/* =========================================================
+   NURSE SIDEBAR
+========================================================= */
+
+.nurse-sidebar {
+  width: 300px;
+
+  min-height: 100vh;
+
+  background:
+    linear-gradient(
+      180deg,
+      #101c32 0%,
+      #1b3557 100%
+    );
+
+  color: #9fb5d2;
+
+  display: flex;
+
+  flex-direction: column;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+========================================================= */
+
+.nurse-sidebar-brand {
+  height: 102px;
+
+  padding: 25px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nurse-brand-icon {
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #14b8a6,
+      #0ea5a8
+    );
+
+  color: white;
+
+  font-size: 22px;
+}
+
+.nurse-brand-title {
+  margin: 0;
+
+  color: white;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+.nurse-brand-subtitle {
+  margin: 3px 0 0;
+
+  color: #00d5c1;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+========================================================= */
+
+.nurse-sidebar-nav {
+  padding-top: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  flex: 1;
+}
+
+.nurse-nav-item {
+  height: 50px;
+
+  padding: 0 22px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 17px;
+
+  color: #a7bdd8;
+
+  text-decoration: none;
+
+  font-size: 17px;
+
+  border-left: 3px solid transparent;
+
+  transition: 0.2s ease;
+}
+
+.nurse-nav-item:hover {
+  background: rgba(0, 211, 191, 0.08);
+
+  color: white;
+}
+
+.nurse-nav-item.active {
+  background: rgba(0, 211, 191, 0.13);
+
+  color: #16d5b7;
+
+  border-left-color: #10cdb6;
+}
+
+.nurse-nav-icon {
+  width: 24px;
+
+  text-align: center;
+
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+========================================================= */
+
+.nurse-notification-badge {
+  margin-left: auto;
+
+  width: 25px;
+
+  height: 25px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #f0444c;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.nurse-sidebar-bottom {
+  margin-top: auto;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  padding-bottom: 10px;
+}
+
+.nurse-logout {
+  height: 65px;
+
+  padding: 0 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  color: #ff454f;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+.nurse-user-card {
+  margin: 0 20px;
+
+  min-height: 70px;
+
+  padding: 12px;
+
+  border-radius: 14px;
+
+  background: rgba(65, 101, 143, 0.45);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.nurse-user-avatar {
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  background: #dce7ef;
+}
+
+.nurse-user-name {
+  margin: 0;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+.nurse-user-info {
+  margin: 3px 0 0;
+
+  color: #00d7c0;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   MAIN NURSE AREA
+========================================================= */
+
+.nurse-main {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+/* =========================================================
+   TOP HEADER
+========================================================= */
+
+.nurse-header {
+  height: 74px;
+
+  padding: 0 30px;
+
+  background: white;
+
+  border-bottom: 1px solid #dce3ec;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.nurse-header-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 28px;
+}
+
+.nurse-menu-button {
+  width: 30px;
+
+  height: 30px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #607795;
+
+  font-size: 27px;
+
+  cursor: pointer;
+}
+
+.nurse-welcome-title {
+  margin: 0;
+
+  color: #142846;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+.nurse-date {
+  margin: 3px 0 0;
+
+  color: #8193ab;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   HEADER RIGHT
+========================================================= */
+
+.nurse-header-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 24px;
+}
+
+.nurse-header-notification {
+  position: relative;
+
+  font-size: 22px;
+
+  color: #647893;
+
+  cursor: pointer;
+}
+
+.nurse-header-notification-badge {
+  position: absolute;
+
+  right: -7px;
+
+  top: -8px;
+
+  width: 20px;
+
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: #f0444c;
+
+  color: white;
+
+  font-size: 11px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: 700;
+}
+
+.nurse-header-avatar {
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   MY SCHEDULE CONTENT
+========================================================= */
+
+.schedule-content {
+  flex: 1;
+
+  padding: 0 30px 80px;
+
+  overflow-y: auto;
+
+  background: #f8fafc;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.schedule-page-header {
+  padding: 0;
+
+  margin-bottom: 30px;
+}
+
+.schedule-page-title {
+  margin: 0;
+
+  color: #142846;
+
+  font-size: 30px;
+
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+.schedule-page-subtitle {
+  margin: 6px 0 0;
+
+  color: #667d99;
+
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   WEEK SCHEDULE CARD
+========================================================= */
+
+.schedule-card {
+  width: 100%;
+
+  background: white;
+
+  border: 1px solid #dce4ed;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 2px 8px rgba(20, 40, 70, 0.03);
+}
+
+
+/* =========================================================
+   WEEK HEADER
+========================================================= */
+
+.schedule-card-header {
+  padding: 22px 26px;
+
+  border-bottom: 1px solid #e5ebf2;
+}
+
+.schedule-card-title {
+  margin: 0;
+
+  color: #142846;
+
+  font-size: 21px;
+
+  font-weight: 700;
+}
+
+.schedule-card-date {
+  margin: 5px 0 0;
+
+  color: #8194ac;
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   SCHEDULE ROW
+========================================================= */
+
+.schedule-row {
+  min-height: 98px;
+
+  display: grid;
+
+  grid-template-columns: 140px 1fr 90px;
+
+  align-items: center;
+
+  padding: 0 26px;
+
+  border-bottom: 1px solid #dce3ec;
+
+  transition: background 0.2s ease;
+}
+
+.schedule-row:last-child {
+  border-bottom: none;
+}
+
+.schedule-row:hover {
+  background: #fbfdff;
+}
+
+
+/* =========================================================
+   DAY
+========================================================= */
+
+.schedule-day {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.schedule-day-name {
+  margin: 0;
+
+  color: #172b4d;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+.schedule-day-date {
+  margin: 0;
+
+  color: #8295ad;
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   SHIFT INFORMATION
+========================================================= */
+
+.schedule-shift {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+.shift-details {
+  width: 100%;
+
+  color: #617894;
+
+  font-size: 15px;
+
+  margin-top: -2px;
+}
+
+
+/* =========================================================
+   SHIFT BADGES
+========================================================= */
+
+.shift-badge {
+  min-height: 31px;
+
+  padding: 5px 14px;
+
+  border-radius: 18px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.shift-badge.morning {
+  background: #e2edff;
+
+  color: #2864db;
+
+  border: 1px solid #b9d4ff;
+}
+
+.shift-badge.evening {
+  background: #fff1dc;
+
+  color: #d57b18;
+
+  border: 1px solid #ffdca6;
+}
+
+.shift-badge.night {
+  background: #e9e4ff;
+
+  color: #6653bd;
+
+  border: 1px solid #cec4ff;
+}
+
+.shift-badge.rest {
+  background: #f5f7fa;
+
+  color: #8191a6;
+
+  border: 1px solid #dce4ed;
+}
+
+
+/* =========================================================
+   TODAY BADGE
+========================================================= */
+
+.today-badge {
+  min-height: 30px;
+
+  padding: 5px 12px;
+
+  border-radius: 17px;
+
+  background: #2d66e6;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* =========================================================
+   SWAP BUTTON
+========================================================= */
+
+.schedule-swap-button {
+  width: 72px;
+
+  height: 38px;
+
+  border: 1px solid #d9e2ec;
+
+  border-radius: 10px;
+
+  background: white;
+
+  color: #4f6783;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.schedule-swap-button:hover {
+  border-color: #2563eb;
+
+  color: #2563eb;
+
+  background: #f6f9ff;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.nurse-footer {
+  position: fixed;
+
+  bottom: 0;
+
+  right: 0;
+
+  left: 300px;
+
+  height: 40px;
+
+  padding: 0 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: white;
+
+  border-top: 1px solid #dce3ec;
+
+  color: #8294ac;
+
+  font-size: 14px;
+
+  z-index: 20;
+}
+
+.system-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.system-status-dot {
+  width: 10px;
+
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: #46c778;
+}
+
+
+/* =========================================================
+   HELP BUTTON - NURSE PORTAL
+========================================================= */
+
+.nurse-help-button {
+  position: fixed;
+
+  right: 15px;
+
+  bottom: 10px;
+
+  width: 40px;
+
+  height: 40px;
+
+  border: 1px solid #d9e0e8;
+
+  border-radius: 50%;
+
+  background: white;
+
+  color: #283c55;
+
+  font-size: 21px;
+
+  cursor: pointer;
+
+  z-index: 50;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =========================================================
+   MY SCHEDULE RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .nurse-sidebar {
+    width: 240px;
+  }
+
+  .nurse-footer {
+    left: 240px;
+  }
+
+  .schedule-row {
+    grid-template-columns: 110px 1fr 80px;
+
+    padding: 0 20px;
+  }
+
+  .schedule-content {
+    padding-left: 20px;
+
+    padding-right: 20px;
+  }
+}
+
+
+@media (max-width: 800px) {
+
+  .nurse-sidebar {
+    width: 80px;
+  }
+
+  .nurse-sidebar-brand {
+    justify-content: center;
+
+    padding: 20px 10px;
+  }
+
+  .nurse-brand-text {
+    display: none;
+  }
+
+  .nurse-nav-item {
+    justify-content: center;
+
+    padding: 0;
+
+    font-size: 0;
+  }
+
+  .nurse-nav-icon {
+    font-size: 21px;
+  }
+
+  .nurse-notification-badge {
+    display: none;
+  }
+
+  .nurse-logout {
+    justify-content: center;
+
+    padding: 0;
+
+    font-size: 0;
+  }
+
+  .nurse-user-card {
+    margin: 0 10px;
+
+    justify-content: center;
+
+    padding: 8px;
+  }
+
+  .nurse-user-info-container {
+    display: none;
+  }
+
+  .nurse-footer {
+    left: 80px;
+  }
+
+  .schedule-row {
+    grid-template-columns: 90px 1fr 70px;
+
+    padding: 0 15px;
+  }
+
+  .schedule-page-title {
+    font-size: 26px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .nurse-header {
+    padding: 0 15px;
+  }
+
+  .nurse-header-left {
+    gap: 10px;
+  }
+
+  .nurse-welcome-title {
+    font-size: 15px;
+  }
+
+  .nurse-date {
+    font-size: 12px;
+  }
+
+  .nurse-header-avatar {
+    width: 34px;
+
+    height: 34px;
+  }
+
+  .schedule-content {
+    padding: 0 12px 70px;
+  }
+
+  .schedule-page-header {
+    margin-bottom: 20px;
+  }
+
+  .schedule-page-title {
+    font-size: 24px;
+  }
+
+  .schedule-page-subtitle {
+    font-size: 14px;
+  }
+
+  .schedule-card {
+    border-radius: 14px;
+  }
+
+  .schedule-card-header {
+    padding: 18px;
+  }
+
+  .schedule-row {
+    min-height: 115px;
+
+    grid-template-columns: 70px 1fr;
+
+    position: relative;
+
+    padding: 15px;
+  }
+
+  .schedule-swap-button {
+    position: absolute;
+
+    right: 15px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+  }
+
+  .schedule-shift {
+    padding-right: 80px;
+  }
+
+  .shift-details {
+    line-height: 1.5;
+  }
+
+  .nurse-footer {
+    left: 80px;
+
+    padding: 0 10px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   LOGIN RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .hero-section {
+    padding-left: 50px;
+  }
+
+  .login-section {
+    padding-right: 40px;
+  }
+
+  .hero-content h1 {
+    font-size: 58px;
+  }
+
+  .hero-description {
+    font-size: 17px;
+  }
+
+  .login-card {
+    width: 500px;
+  }
+}
+
+
+@media (max-width: 950px) {
+
+  .login-page {
+    flex-direction: column;
+
+    overflow-y: auto;
+  }
+
+  .hero-section {
+    width: 100%;
+
+    min-height: auto;
+
+    padding: 45px 35px 35px;
+  }
+
+  .hero-content {
+    margin-top: 55px;
+  }
+
+  .hero-content h1 {
+    font-size: 55px;
+  }
+
+  .stats-container {
+    margin-top: 45px;
+
+    padding-bottom: 0;
+  }
+
+  .login-section {
+    width: 100%;
+
+    min-height: auto;
+
+    padding: 30px 35px 60px;
+  }
+
+  .login-card {
+    width: 100%;
+
+    max-width: 560px;
+
+    min-height: auto;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .hero-section {
+    padding: 30px 22px;
+  }
+
+  .brand-icon {
+    width: 44px;
+
+    height: 44px;
+  }
+
+  .brand-text h2 {
+    font-size: 20px;
+  }
+
+  .hero-content {
+    margin-top: 45px;
+  }
+
+  .hero-content h1 {
+    font-size: 44px;
+
+    letter-spacing: -1.5px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+  .hero-description br {
+    display: none;
+  }
+
+  .stats-container {
+    gap: 10px;
+
+    flex-wrap: wrap;
+  }
+
+  .stats-card {
+    flex: 1;
+
+    min-width: 105px;
+
+    width: auto;
+
+    height: 95px;
+  }
+
+  .stats-value {
+    font-size: 25px;
+  }
+
+  .stats-label {
+    font-size: 12px;
+  }
+
+  .login-section {
+    padding: 20px 15px 45px;
+  }
+
+  .login-card {
+    padding: 35px 25px;
+
+    border-radius: 24px;
+  }
+
+  .login-header h2 {
+    font-size: 28px;
+  }
+
+  .role-selector {
+    margin-top: 35px;
+  }
+
+  .form-options {
+    gap: 10px;
+  }
+
+  .forgot-password,
+  .remember-me {
+    font-size: 13px;
+  }
+
+  .cookie-button {
+    display: none;
+  }
+}
+/* =========================================
+   NURSE PORTAL LAYOUT
+========================================= */
+
+.nurse-layout {
+  min-height: 100vh;
+  display: flex;
+  background: #f7f9fc;
+  color: #142846;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.nurse-sidebar {
+  width: 300px;
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #101a30,
+    #1d3a60
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  height: 100px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #12b8a9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.sidebar-brand h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.sidebar-brand p {
+  margin: 4px 0 0;
+  color: #00d8c0;
+  font-size: 14px;
+}
+
+/* =========================================
+   SIDEBAR MENU
+========================================= */
+
+.sidebar-menu {
+  padding-top: 20px;
+}
+
+.sidebar-item {
+  width: 100%;
+  height: 50px;
+  padding: 0 22px;
+  border: none;
+  background: transparent;
+  color: #a9bedb;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 17px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.sidebar-item.active {
+  background: rgba(0, 210, 190, 0.15);
+  color: #00d8b5;
+  border-left: 3px solid #00d8b5;
+}
+
+.sidebar-icon {
+  width: 22px;
+  text-align: center;
+  font-size: 22px;
+}
+
+.notification-count {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ff4b4b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* =========================================
+   SIDEBAR BOTTOM
+========================================= */
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.logout-button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #ff4d55;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 12px 0;
+  text-align: left;
+}
+
+.sidebar-user {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar,
+.header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1e40af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.user-info strong {
+  font-size: 14px;
+}
+
+.user-info span {
+  color: #00d8b5;
+  font-size: 13px;
+}
+
+/* =========================================
+   MAIN AREA
+========================================= */
+
+.nurse-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.nurse-header {
+  height: 74px;
+  background: white;
+  border-bottom: 1px solid #e0e6ef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.hamburger-button {
+  border: none;
+  background: transparent;
+  color: #607793;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.welcome-text h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #142846;
+}
+
+.welcome-text p {
+  margin: 3px 0 0;
+  color: #8295ae;
+  font-size: 14px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.header-notification {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  position: relative;
+  cursor: pointer;
+}
+
+.header-notification span {
+  position: absolute;
+  top: -7px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================
+   SCHEDULE CONTENT
+========================================= */
+
+.schedule-content {
+  flex: 1;
+  padding: 0 30px 70px;
+  overflow-y: auto;
+}
+
+.schedule-heading {
+  margin: 0 0 30px;
+}
+
+.schedule-heading h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.schedule-heading p {
+  margin: 7px 0 0;
+  color: #607793;
+  font-size: 17px;
+}
+
+/* =========================================
+   SCHEDULE CARD
+========================================= */
+
+.schedule-card {
+  background: white;
+  border: 1px solid #dfe6ef;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.schedule-card-header {
+  padding: 25px;
+  border-bottom: 1px solid #e4e9f0;
+}
+
+.schedule-card-header h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.schedule-card-header p {
+  margin: 5px 0 0;
+  color: #8194ae;
+}
+
+/* =========================================
+   SCHEDULE ROW
+========================================= */
+
+.schedule-row {
+  min-height: 98px;
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  align-items: center;
+  padding: 0 25px;
+  border-bottom: 1px solid #dce2ea;
+}
+
+.schedule-row:last-child {
+  border-bottom: none;
+}
+
+.day-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.day-column strong {
+  font-size: 17px;
+}
+
+.day-column span {
+  color: #8295ae;
+  font-size: 15px;
+}
+
+.shift-column {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.shift-labels {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.morning-label {
+  padding: 6px 13px;
+  border-radius: 20px;
+  background: #e2efff;
+  border: 1px solid #b8d5ff;
+  color: #2563eb;
+  font-size: 14px;
+}
+
+.today-label {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #2563eb;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shift-time {
+  margin: 0;
+  color: #536d8d;
+  font-size: 15px;
+}
+
+.rest-day {
+  display: inline-block;
+  width: fit-content;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: #f7f9fc;
+  border: 1px solid #dce4ed;
+  color: #8295ae;
+  font-size: 14px;
+}
+
+.swap-column {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.swap-button {
+  padding: 9px 18px;
+  border: 1px solid #dce4ed;
+  border-radius: 10px;
+  background: white;
+  color: #526b89;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.swap-button:hover {
+  background: #f1f7ff;
+  border-color: #8bb7ff;
+  color: #2563eb;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.nurse-footer {
+  height: 40px;
+  background: white;
+  border-top: 1px solid #e0e6ef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  color: #8194ae;
+  font-size: 14px;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #3fc77a;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+  .nurse-sidebar {
+    width: 230px;
+  }
+
+  .schedule-row {
+    grid-template-columns: 100px 1fr 80px;
+    padding: 0 15px;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .nurse-sidebar {
+    width: 70px;
+  }
+
+  .sidebar-brand {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar-brand > div:last-child,
+  .sidebar-item span:last-child,
+  .sidebar-user,
+  .logout-button {
+    display: none;
+  }
+
+  .sidebar-item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .schedule-content {
+    padding: 0 15px 60px;
+  }
+
+  .schedule-row {
+    grid-template-columns: 70px 1fr;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .swap-column {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+
+  .nurse-footer {
+    font-size: 11px;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .nurse-header {
+    padding: 0 15px;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+  .schedule-heading h1 {
+    font-size: 26px;
+  }
+
+  .schedule-card-header {
+    padding: 18px;
+  }
+
+}
+
+/* =========================================================
+   GOOGLE AUTHENTICATION & LOGIN ENHANCEMENTS
+========================================================= */
+
+.google-signin-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid #dbe3ed;
+  background: white;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.google-signin-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 18px 0 10px;
+  color: #8799ad;
+  font-size: 14px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.login-divider span {
+  padding: 0 12px;
+}
+
+.login-error-banner {
+  margin-top: 18px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   LIVE CLOCK & REAL-TIME TIMESTAMP BADGE
+========================================================= */
+
+.live-clock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #1e40af;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.live-clock-badge.dark {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.live-clock-icon {
+  font-size: 15px;
+}
+
+.live-clock-divider {
+  opacity: 0.5;
+}

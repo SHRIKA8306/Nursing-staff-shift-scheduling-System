@@ -1,0 +1,943 @@
+/* ==========================================
+   SETTINGS PAGE
+========================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+.settings-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background: #f6f8fb;
+  color: #142846;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+.settings-sidebar {
+  width: 300px;
+  min-height: 100vh;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  background: linear-gradient(
+    180deg,
+    #101b32 0%,
+    #1c395e 100%
+  );
+
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  z-index: 100;
+}
+
+
+/* ==========================================
+   BRAND
+========================================== */
+
+.settings-brand {
+  height: 95px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 0 20px;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.settings-brand-icon {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0db1a8;
+}
+
+.settings-brand h2 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.settings-brand p {
+  margin: 3px 0 0;
+
+  color: #00d5c5;
+
+  font-size: 14px;
+}
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+.settings-navigation {
+  padding-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-nav-item {
+  width: 100%;
+  height: 51px;
+
+  padding: 0 22px;
+
+  border: none;
+  background: transparent;
+
+  color: #a7bdd8;
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  position: relative;
+
+  transition: 0.2s ease;
+}
+
+.settings-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+}
+
+.settings-nav-item.active {
+  background: rgba(0, 202, 183, 0.18);
+
+  color: #00d8bd;
+}
+
+.settings-nav-item.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background: #00d8bd;
+}
+
+.settings-nav-item svg {
+  flex-shrink: 0;
+}
+
+
+/* Notification Badge */
+
+.settings-notification-badge {
+  margin-left: auto;
+
+  width: 25px;
+  height: 25px;
+
+  border-radius: 50%;
+
+  background: #f6474f;
+
+  color: white;
+
+  font-size: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ==========================================
+   SIDEBAR BOTTOM
+========================================== */
+
+.settings-sidebar-bottom {
+  margin-top: auto;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  padding: 22px 20px 18px;
+}
+
+.settings-logout-button {
+  width: 100%;
+
+  height: 45px;
+
+  border: none;
+  background: transparent;
+
+  color: #ff4c4c;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  padding: 0;
+}
+
+.settings-sidebar-profile {
+  margin-top: 18px;
+
+  padding: 13px;
+
+  border-radius: 15px;
+
+  background: rgba(
+    64,
+    105,
+    151,
+    0.35
+  );
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.settings-profile-avatar {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #f1c27d,
+    #e5e7eb
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.settings-profile-info {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.settings-profile-info strong {
+  color: white;
+  font-size: 14px;
+}
+
+.settings-profile-info span {
+  color: #00d7c5;
+  font-size: 13px;
+}
+
+
+/* ==========================================
+   MAIN
+========================================== */
+
+.settings-main {
+  margin-left: 300px;
+
+  width: calc(100% - 300px);
+
+  min-height: 100vh;
+
+  position: relative;
+
+  padding-bottom: 60px;
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.settings-header {
+  height: 74px;
+
+  background: white;
+
+  border-bottom: 1px solid #dfe5ed;
+
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 28px 0 38px;
+}
+
+.settings-header-left {
+  display: flex;
+  align-items: center;
+
+  gap: 27px;
+}
+
+.settings-menu-toggle {
+  border: none;
+
+  background: transparent;
+
+  color: #607895;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-welcome h3 {
+  margin: 0;
+
+  font-size: 18px;
+
+  color: #122642;
+}
+
+.settings-welcome p {
+  margin: 2px 0 0;
+
+  color: #8499b4;
+
+  font-size: 15px;
+}
+
+.settings-header-right {
+  display: flex;
+  align-items: center;
+
+  gap: 23px;
+}
+
+.settings-header-notification {
+  position: relative;
+
+  border: none;
+  background: transparent;
+
+  color: #62758f;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+}
+
+.settings-header-notification span {
+  position: absolute;
+
+  top: -7px;
+  right: -7px;
+
+  width: 21px;
+  height: 21px;
+
+  border-radius: 50%;
+
+  background: #f0444e;
+
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-header-avatar {
+  width: 39px;
+  height: 39px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #d4e4a5,
+    #f2d3b5
+  );
+
+  color: white;
+
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ==========================================
+   PAGE CONTENT
+========================================== */
+
+.settings-content {
+  padding: 0 28px 40px;
+}
+
+.settings-page-heading {
+  padding: 8px 0 30px;
+}
+
+.settings-page-heading h1 {
+  margin: 0;
+
+  font-size: 30px;
+
+  line-height: 1.2;
+
+  color: #10243f;
+}
+
+.settings-page-heading p {
+  margin: 7px 0 0;
+
+  color: #58708f;
+
+  font-size: 17px;
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.settings-card {
+  width: 100%;
+
+  background: white;
+
+  border: 1px solid #dce4ed;
+
+  border-radius: 18px;
+
+  padding: 26px 25px;
+
+  margin-bottom: 30px;
+}
+
+.settings-card h2 {
+  margin: 0 0 25px;
+
+  color: #132b4b;
+
+  font-size: 21px;
+
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   NOTIFICATION SETTINGS
+========================================== */
+
+.notification-settings-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.notification-setting {
+  min-height: 88px;
+
+  padding: 20px;
+
+  border-radius: 15px;
+
+  background: #f7f9fb;
+
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.notification-setting h3 {
+  margin: 0;
+
+  font-size: 17px;
+
+  color: #173352;
+}
+
+.notification-setting p {
+  margin: 6px 0 0;
+
+  color: #8298b5;
+
+  font-size: 15px;
+}
+
+
+/* ==========================================
+   TOGGLE
+========================================== */
+
+.toggle-switch {
+  width: 60px;
+  height: 30px;
+
+  border: none;
+
+  border-radius: 20px;
+
+  background: #e0e6ef;
+
+  padding: 3px;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+  flex-shrink: 0;
+}
+
+.toggle-switch span {
+  display: block;
+
+  width: 24px;
+  height: 24px;
+
+  background: white;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.15);
+
+  transition: 0.25s ease;
+}
+
+.toggle-switch.toggle-on {
+  background: #14b8aa;
+}
+
+.toggle-switch.toggle-on span {
+  transform: translateX(30px);
+}
+
+
+/* ==========================================
+   SECURITY
+========================================== */
+
+.security-card {
+  padding-bottom: 25px;
+}
+
+.password-form {
+  width: 480px;
+
+  max-width: 100%;
+}
+
+.password-group {
+  margin-bottom: 20px;
+}
+
+.password-group label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #183454;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+.password-input-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+
+  height: 52px;
+
+  border: 1px solid #d7e0eb;
+
+  border-radius: 13px;
+
+  background: white;
+
+  padding: 0 48px 0 17px;
+
+  outline: none;
+
+  color: #193554;
+
+  font-size: 15px;
+}
+
+.password-input-wrapper input:focus {
+  border-color: #3670ed;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(54, 112, 237, 0.08);
+}
+
+.password-eye-button {
+  position: absolute;
+
+  right: 13px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: none;
+
+  background: transparent;
+
+  color: #8295ab;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.update-password-button {
+  height: 51px;
+
+  padding: 0 30px;
+
+  margin-top: 1px;
+
+  border: none;
+
+  border-radius: 13px;
+
+  background: #2b65e9;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.update-password-button:hover {
+  background: #2057d5;
+
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================
+   APPEARANCE
+========================================== */
+
+.appearance-options {
+  display: flex;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+}
+
+.appearance-button {
+  height: 58px;
+
+  min-width: 124px;
+
+  padding: 0 18px;
+
+  border-radius: 14px;
+
+  border: 1px solid #dce4ed;
+
+  background: white;
+
+  color: #5d7491;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  transition: 0.2s ease;
+}
+
+.appearance-button:hover {
+  border-color: #477af0;
+
+  color: #2d67e8;
+}
+
+.appearance-button.selected {
+  border: 1px solid #2b65f1;
+
+  color: #2b65e9;
+
+  background: #fbfcff;
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.settings-footer {
+  position: fixed;
+
+  bottom: 0;
+  left: 300px;
+  right: 0;
+
+  height: 45px;
+
+  background: white;
+
+  border-top: 1px solid #dce4ed;
+
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 28px;
+
+  color: #8499b5;
+
+  font-size: 14px;
+
+  z-index: 50;
+}
+
+.settings-system-status {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.settings-status-dot {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: #2ac86e;
+}
+
+
+/* ==========================================
+   HELP BUTTON
+========================================== */
+
+.settings-help-button {
+  position: fixed;
+
+  right: 12px;
+  bottom: 10px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: white;
+
+  color: #26384c;
+
+  font-size: 22px;
+
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.13);
+
+  cursor: pointer;
+
+  z-index: 100;
+}
+
+
+/* ==========================================
+   MOBILE CLOSE
+========================================== */
+
+.settings-sidebar-close {
+  display: none;
+
+  position: absolute;
+
+  right: 12px;
+  top: 15px;
+
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   MOBILE MENU
+========================================== */
+
+.settings-menu-toggle {
+  display: none;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+
+  .settings-sidebar {
+    transform: translateX(-100%);
+
+    transition: 0.25s ease;
+  }
+
+  .settings-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .settings-sidebar-close {
+    display: flex;
+  }
+
+  .settings-main {
+    margin-left: 0;
+
+    width: 100%;
+  }
+
+  .settings-menu-toggle {
+    display: flex;
+  }
+
+  .settings-footer {
+    left: 0;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .settings-header {
+    padding: 0 15px;
+  }
+
+  .settings-header-left {
+    gap: 12px;
+  }
+
+  .settings-content {
+    padding: 0 14px 35px;
+  }
+
+  .settings-page-heading h1 {
+    font-size: 26px;
+  }
+
+  .settings-card {
+    padding: 20px 15px;
+  }
+
+  .notification-setting {
+    padding: 16px;
+
+    gap: 15px;
+  }
+
+  .notification-setting h3 {
+    font-size: 15px;
+  }
+
+  .notification-setting p {
+    font-size: 13px;
+  }
+
+  .toggle-switch {
+    width: 54px;
+  }
+
+  .toggle-switch.toggle-on span {
+    transform: translateX(24px);
+  }
+
+  .settings-footer {
+    padding: 0 15px;
+
+    font-size: 12px;
+  }
+
+  .settings-footer span:first-child {
+    max-width: 65%;
+  }
+
+}

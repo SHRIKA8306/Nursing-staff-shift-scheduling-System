@@ -1,0 +1,10 @@
+{
+  "name": "nurse-shift-scheduling",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix frontend"
+  }
+}
