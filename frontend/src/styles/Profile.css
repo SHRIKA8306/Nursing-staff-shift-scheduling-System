@@ -3,9 +3,11 @@
 ========================================== */
 
 .profile-page {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
   width: 100%;
   display: flex;
+  overflow: hidden;
   background: #f6f8fb;
   color: #142846;
 }
@@ -18,7 +20,8 @@
 .profile-main {
   flex: 1;
   min-width: 0;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   position: relative;
   padding-bottom: 55px;
 }

@@ -7,9 +7,11 @@
 }
 
 .settings-page {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
   width: 100%;
   display: flex;
+  overflow: hidden;
   background: #f6f8fb;
   color: #142846;
   font-family: Arial, Helvetica, sans-serif;
@@ -22,7 +24,7 @@
 
 .settings-sidebar {
   width: 300px;
-  min-height: 100vh;
+  height: 100vh;
 
   position: fixed;
   left: 0;
@@ -39,6 +41,9 @@
 
   display: flex;
   flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 
   z-index: 100;
 }
@@ -286,7 +291,9 @@
 
   width: calc(100% - 300px);
 
-  min-height: 100vh;
+  height: 100vh;
+
+  overflow-y: auto;
 
   position: relative;
 
