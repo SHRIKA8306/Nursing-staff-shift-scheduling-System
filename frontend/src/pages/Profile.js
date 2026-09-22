@@ -21,7 +21,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Profile.css";
 
 function Profile() {
-  const { user, token, role } = useAuth();
+  const { user, token, role, unreadCount } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState("");
@@ -138,7 +138,7 @@ function Profile() {
           <div className="profile-header-right">
             <button className="profile-notification">
               <Bell size={21} />
-              <span>2</span>
+              <span>{unreadCount || 0}</span>
             </button>
             <div className="profile-header-avatar">
               {nurseName.substring(0, 2).toUpperCase()}

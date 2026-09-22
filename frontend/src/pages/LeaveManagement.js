@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/LeaveManagement.css";
 
 function LeaveManagement() {
-  const { user, token, role } = useAuth();
+  const { user, token, role, unreadCount } = useAuth();
 
   const [activeTab, setActiveTab] = useState(role === 'admin' ? "history" : "apply");
   const [leaveType, setLeaveType] = useState("Casual");
@@ -126,7 +126,7 @@ function LeaveManagement() {
           </div>
 
           <div className="header-right">
-            <button className="header-notification" type="button"><Bell size={21} /><span>2</span></button>
+            <button className="header-notification" type="button"><Bell size={21} /><span>{unreadCount || 0}</span></button>
             <div className="header-avatar">{nurseName.substring(0, 2).toUpperCase()}</div>
           </div>
         </header>

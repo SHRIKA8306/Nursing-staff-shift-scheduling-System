@@ -8,9 +8,9 @@ export const DEPARTMENTS = [
 ];
 
 export const SHIFT_TIMES = {
-  Day: { name: 'Day Shift', hours: '07:00 - 15:30', icon: '☀️', color: '#f59e0b' },
-  Evening: { name: 'Evening Shift', hours: '15:00 - 23:30', icon: '🌅', color: '#6366f1' },
-  Night: { name: 'Night Shift', hours: '23:00 - 07:30', icon: '🌙', color: '#14b8a6' },
+  Morning: { name: 'Morning Shift', hours: '06:00 - 14:00', icon: '☀️', color: '#f59e0b' },
+  Evening: { name: 'Evening Shift', hours: '14:00 - 22:00', icon: '🌅', color: '#6366f1' },
+  Night: { name: 'Night Shift', hours: '22:00 - 06:00', icon: '🌙', color: '#14b8a6' },
 };
 
 export const INITIAL_NURSES = [

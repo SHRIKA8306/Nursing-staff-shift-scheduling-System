@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getInitials } from "../utils/helpers";
 import { useLocation, useNavigate } from "react-router-dom";
 import NurseSidebar from "../components/NurseSidebar";
 import AdminSidebar from "../components/AdminSidebar";
@@ -8,7 +9,7 @@ import { useAuth } from "../context/AuthContext";
 function ShiftSwap() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, token, role } = useAuth();
+  const { user, token, role, unreadCount } = useAuth();
 
   const selectedShift = location.state?.shift;
 
@@ -104,7 +105,9 @@ function ShiftSwap() {
     }
   };
 
-  const handleStatusUpdate = async (swapId, newStatus) => {
+  const [overrideModal, setOverrideModal] = useState({ show: false, swapId: null, violations: [], reason: "" });
+
+  const handleStatusUpdate = async (swapId, newStatus, override = false, overrideReason = "") => {
     try {
       const res = await fetch(`/api/swaps/${swapId}/status`, {
         method: "PUT",
@@ -112,28 +115,35 @@ function ShiftSwap() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus, override, overrideReason })
       });
-      if (res.ok) {
-        fetchSwapRequests();
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        if (data.violations) {
+          setOverrideModal({ show: true, swapId, violations: data.violations, reason: "" });
+        } else {
+          setErrorMsg(data.message);
+        }
+        return;
       }
+      
+      if (override) setOverrideModal({ show: false, swapId: null, violations: [], reason: "" });
+      fetchSwapRequests();
     } catch (err) {
       console.error("Status update error:", err);
+      setErrorMsg(err.message);
     }
   };
 
-  const getInitials = (name) => {
-    if (!name) return "NS";
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 2).toUpperCase();
-  };
 
   const nurseName = user ? user.username : "Nurse";
 
   return (
-    <div className="nurse-layout">
-      {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
+    <>
+      <div className="nurse-layout">
+        {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       <div className="nurse-main">
         <header className="nurse-header">
@@ -146,7 +156,7 @@ function ShiftSwap() {
           </div>
 
           <div className="header-right">
-            <button className="header-notification">♧ <span>2</span></button>
+            <button className="header-notification">♧ <span>{unreadCount || 0}</span></button>
             <div className="header-avatar">{getInitials(nurseName)}</div>
           </div>
         </header>
@@ -296,6 +306,38 @@ function ShiftSwap() {
         </main>
       </div>
     </div>
+      
+      {/* OVERRIDE MODAL */}
+      {overrideModal.show && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'white', padding: '30px', borderRadius: '16px', width: '450px' }}>
+            <h2 style={{ margin: '0 0 15px', color: '#b91c1c' }}>⚠️ Rule Violations Detected</h2>
+            <p style={{ margin: '0 0 15px', fontSize: '14px', color: '#334155' }}>The rule engine blocked this swap for the following reasons:</p>
+            <ul style={{ color: '#991b1b', fontSize: '13px', paddingLeft: '20px', margin: '0 0 20px' }}>
+              {overrideModal.violations.map((v, i) => <li key={i}>{v}</li>)}
+            </ul>
+            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>Override Reason (Required):</label>
+            <input 
+              type="text" 
+              value={overrideModal.reason} 
+              onChange={e => setOverrideModal({...overrideModal, reason: e.target.value})} 
+              style={{ width: '100%', padding: '10px', marginBottom: '20px', borderRadius: '8px', border: '1px solid #cbd5e1' }} 
+              placeholder="Provide a mandatory reason to bypass rules..."
+            />
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setOverrideModal({ show: false, swapId: null, violations: [], reason: "" })} style={{ flex: 1, padding: '10px', border: '1px solid #cbd5e1', background: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+              <button 
+                onClick={() => handleStatusUpdate(overrideModal.swapId, 'Approved', true, overrideModal.reason)} 
+                disabled={!overrideModal.reason} 
+                style={{ flex: 1, padding: '10px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '8px', cursor: overrideModal.reason ? 'pointer' : 'not-allowed', opacity: overrideModal.reason ? 1 : 0.6 }}
+              >
+                Force Approve
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

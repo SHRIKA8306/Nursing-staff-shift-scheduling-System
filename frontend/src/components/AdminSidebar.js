@@ -32,10 +32,13 @@ function AdminSidebar() {
       icon: "▤",
       path: "/leave-management",
     },
+    { name: "Reports & Fairness", icon: "📊", path: "/admin-reports" },
+    { name: "Audit Logs", icon: "📝", path: "/audit-logs" },
+    { name: "Certifications", icon: "📄", path: "/certifications" },
     {
       name: "Attendance Logs",
       icon: "◷",
-      path: "/attendance",
+      path: "/admin-attendance",
     },
     {
       name: "Notifications",

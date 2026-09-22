@@ -17,23 +17,16 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-
+import { getInitials } from "../utils/helpers";
 import "../styles/Settings.css";
 
 function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, unreadCount } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const nurseName = user ? user.username : "Nurse";
   const nurseDept = user ? user.department || "General Ward" : "ICU";
   const nurseEmpId = user ? user.employeeId || "EMP-001" : "EMP-001";
-
-  const getInitials = (name) => {
-    if (!name) return "NS";
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 2).toUpperCase();
-  };
 
   // Notification settings
   const [notifications, setNotifications] = useState({
@@ -266,7 +259,7 @@ function Settings() {
           <div className="settings-header-right">
             <button className="settings-header-notification">
               <Bell size={21} />
-              <span>2</span>
+              <span>{unreadCount || 0}</span>
             </button>
 
             <div className="settings-header-avatar">

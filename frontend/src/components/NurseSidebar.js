@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { getInitials } from "../utils/helpers";
 import { useAuth } from "../context/AuthContext";
 
 function NurseSidebar() {
@@ -49,12 +50,6 @@ function NurseSidebar() {
     },
   ];
 
-  const getInitials = (name) => {
-    if (!name) return "NS";
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 2).toUpperCase();
-  };
 
   return (
     <aside className="nurse-sidebar">

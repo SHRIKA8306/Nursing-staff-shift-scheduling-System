@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NurseSidebar from "../components/NurseSidebar";
+import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -10,73 +11,40 @@ import {
   CircleHelp,
   Bell,
 } from "lucide-react";
-
+import { getInitials } from "../utils/helpers";
 import "../styles/Notifications.css";
 
 function Notifications() {
-  const { user } = useAuth();
+  const { user, token, role, unreadCount, setUnreadCount } = useAuth();
   const [activeFilter, setActiveFilter] = useState("All");
+  const [loading, setLoading] = useState(true);
 
   const nurseName = user ? user.username : "Nurse";
-  const getInitials = (name) => {
-    if (!name) return "NS";
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 2).toUpperCase();
-  };
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "Shift",
-      title: "Morning Shift Reminder",
-      message:
-        "Your morning shift starts at 6:00 AM tomorrow in ICU Ward A. Please ensure punctual arrival.",
-      time: "5 minutes ago",
-      unread: true,
-      icon: CalendarDays,
-    },
-    {
-      id: 2,
-      type: "Leave",
-      title: "Leave Request Approved",
-      message:
-        "Your annual leave request (LR-008) for June 15–19 has been approved by Dr. James Miller.",
-      time: "1 hour ago",
-      unread: true,
-      icon: CheckCircle,
-    },
-    {
-      id: 3,
-      type: "Emergency",
-      title: "Emergency Staffing Alert",
-      message:
-        "URGENT: ICU Ward B is understaffed for night shift Aug 7. Volunteers needed. Contact supervisor.",
-      time: "3 hours ago",
-      unread: true,
-      icon: AlertTriangle,
-    },
-    {
-      id: 4,
-      type: "Admin",
-      title: "Schedule Updated",
-      message:
-        "Your August shift schedule has been updated by the administrator. Please review your schedule.",
-      time: "Yesterday",
-      unread: false,
-      icon: Settings,
-    },
-    {
-      id: 5,
-      type: "Shift",
-      title: "Shift Swap Request",
-      message:
-        "Sarah requested a shift swap with you for the morning shift on August 10.",
-      time: "Yesterday",
-      unread: false,
-      icon: CalendarDays,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      fetchNotifications();
+    }
+  }, [token]);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch("/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setNotifications(data);
+        setUnreadCount(data.filter(n => !n.read).length);
+      }
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filters = [
     "All",
@@ -91,27 +59,27 @@ function Notifications() {
       ? notifications
       : notifications.filter(
           (notification) =>
-            notification.type === activeFilter
+            notification.type && notification.type.toLowerCase() === activeFilter.toLowerCase()
         );
 
-  const unreadCount = notifications.filter(
-    (notification) => notification.unread
-  ).length;
-
-  const markAllAsRead = () => {
-    setNotifications((previousNotifications) =>
-      previousNotifications.map((notification) => ({
-        ...notification,
-        unread: false,
-      }))
-    );
+  const markAllAsRead = async () => {
+    try {
+      await fetch("/api/notifications/read-all", {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications((prev) => prev.map(n => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div className="notifications-page">
 
       {/* SIDEBAR */}
-      <NurseSidebar />
+      {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       {/* MAIN AREA */}
       <div className="notifications-main">
@@ -240,15 +208,23 @@ function Notifications() {
               filteredNotifications.map(
                 (notification) => {
 
-                  const Icon =
-                    notification.icon;
+                  const getIconForType = (type) => {
+                    switch (type?.toLowerCase()) {
+                      case "shift": return CalendarDays;
+                      case "leave": return CheckCircle;
+                      case "emergency": return AlertTriangle;
+                      case "admin": return Settings;
+                      default: return Bell;
+                    }
+                  };
+                  const Icon = notification.icon || getIconForType(notification.type);
 
                   return (
 
                     <div
                       key={notification.id}
                       className={`notification-card ${
-                        notification.unread
+                        !notification.read
                           ? "unread"
                           : ""
                       }`}
@@ -278,7 +254,7 @@ function Notifications() {
                             {notification.title}
                           </h3>
 
-                          {notification.unread && (
+                          {!notification.read && (
                             <span className="unread-dot"></span>
                           )}
 
@@ -303,7 +279,7 @@ function Notifications() {
                       {/* Time */}
 
                       <div className="notification-time">
-                        {notification.time}
+                        {notification.createdAt ? new Date(notification.createdAt).toLocaleString() : notification.time}
                       </div>
 
                     </div>

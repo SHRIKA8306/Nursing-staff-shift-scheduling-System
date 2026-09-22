@@ -87,8 +87,8 @@ const seedDatabase = async () => {
             nurse: user._id,
             date: today,
             shiftType: nurseData.shiftPreference === 'Night' ? 'Night' : 'Morning',
-            startTime: '07:00',
-            endTime: '15:00',
+            startTime: nurseData.shiftPreference === 'Night' ? '22:00' : '06:00',
+            endTime: nurseData.shiftPreference === 'Night' ? '06:00' : '14:00',
             department: nurseData.department,
             status: 'Scheduled',
             notes: 'Regular Shift'
@@ -97,8 +97,8 @@ const seedDatabase = async () => {
             nurse: user._id,
             date: tomorrow,
             shiftType: nurseData.shiftPreference === 'Evening' ? 'Evening' : 'Morning',
-            startTime: '15:00',
-            endTime: '23:00',
+            startTime: nurseData.shiftPreference === 'Evening' ? '14:00' : '06:00',
+            endTime: nurseData.shiftPreference === 'Evening' ? '22:00' : '14:00',
             department: nurseData.department,
             status: 'Scheduled',
             notes: 'Assigned by Admin'
@@ -107,8 +107,8 @@ const seedDatabase = async () => {
             nurse: user._id,
             date: dayAfter,
             shiftType: 'Night',
-            startTime: '23:00',
-            endTime: '07:00',
+            startTime: '22:00',
+            endTime: '06:00',
             department: nurseData.department,
             status: 'Scheduled',
             notes: 'Overnight Care'

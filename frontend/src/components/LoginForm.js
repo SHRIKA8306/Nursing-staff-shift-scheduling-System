@@ -94,11 +94,8 @@ function LoginForm() {
         setRole={(newRole) => {
           setRole(newRole);
           setErrorMessage("");
-          if (newRole === "admin") {
-            setFormData({ username: "admin@gmail.com", password: "admin" });
-          } else {
-            setFormData({ username: "", password: "" });
-          }
+          // Clear form fields for both admin and nurse roles
+          setFormData({ username: "", password: "" });
         }}
       />
 

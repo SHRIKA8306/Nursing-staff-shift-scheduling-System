@@ -7,6 +7,13 @@ const profileSchema = new mongoose.Schema(
         fullName: { type: String, required: true, trim: true },
         department: { type: String, default: 'General' },
         qualifications: [{ type: String }],
+        certifications: [{
+            name: { type: String, required: true },
+            issueDate: { type: Date },
+            expiryDate: { type: Date, required: true },
+            status: { type: String, enum: ['Active', 'Expired'], default: 'Active' },
+            fileUrl: { type: String }
+        }],
         experienceYears: { type: Number, default: 0, min: 0 },
         shiftPreference: { 
             type: String, 
@@ -36,6 +43,13 @@ const profileValidationSchema = Joi.object({
     fullName: Joi.string().required(),
     department: Joi.string().allow('', null),
     qualifications: Joi.array().items(Joi.string()).optional(),
+    certifications: Joi.array().items(Joi.object({
+        name: Joi.string().required(),
+        issueDate: Joi.date().optional(),
+        expiryDate: Joi.date().required(),
+        status: Joi.string().valid('Active', 'Expired').optional(),
+        fileUrl: Joi.string().allow('', null).optional()
+    })).optional(),
     experienceYears: Joi.number().min(0).optional(),
     shiftPreference: Joi.string().valid('Morning', 'Evening', 'Night', 'Flexible').optional(),
     phone: Joi.string().allow('', null),

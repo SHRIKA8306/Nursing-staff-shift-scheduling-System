@@ -15,9 +15,13 @@ import MySchedule from "./pages/MySchedule";
 import ShiftSwap from "./pages/ShiftSwap";
 import LeaveManagement from "./pages/LeaveManagement";
 import Attendance from "./pages/Attendance";
+import AdminAttendance from "./pages/AdminAttendance";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import AdminReports from "./pages/AdminReports";
+import AuditLogs from "./pages/AuditLogs";
+import Certifications from "./pages/Certifications";
 
 function App() {
   return (
@@ -41,6 +45,30 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <NurseManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-reports"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminReports />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/audit-logs"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AuditLogs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/certifications"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Certifications />
               </ProtectedRoute>
             }
           />
@@ -81,8 +109,16 @@ function App() {
           <Route
             path="/attendance"
             element={
-              <ProtectedRoute allowedRoles={["nurse", "admin"]}>
+              <ProtectedRoute allowedRoles={["nurse"]}>
                 <Attendance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-attendance"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminAttendance />
               </ProtectedRoute>
             }
           />

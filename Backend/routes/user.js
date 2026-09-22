@@ -6,14 +6,20 @@ const auth = require('../middleware/auth');
 // @desc    Get list of nurses (for shift swapping selection)
 router.get('/nurses', auth, async (req, res) => {
   try {
-    const nurses = await User.find({ _id: { $ne: req.user.id } })
+    // Return all nurses/head_nurses except the current user
+    const nurses = await User.find({ 
+      _id: { $ne: req.user.id },
+      role: { $in: ['nurse', 'head_nurse'] }
+    })
       .select('_id username email department profilePic role employeeId')
       .sort({ username: 1 });
+      
     res.json(nurses);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching nurses: ' + err.message });
   }
 });
+
 
 // @route   GET /api/users/all
 // @desc    Get all users (Admin view)

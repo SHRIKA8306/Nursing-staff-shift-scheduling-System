@@ -1,0 +1,53 @@
+.admin-reports {
+  padding: 32px;
+  color: white;
+}
+
+.admin-reports h1,
+.admin-reports h2 {
+  margin-bottom: 20px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.heatmap-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 8px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  gap: 4px;
+}
+
+.fairness-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.fairness-table th,
+.fairness-table td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid #334155;
+}
+
+.fairness-table th {
+  color: #94a3b8;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fairness-table td {
+  color: #e2e8f0;
+}

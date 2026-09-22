@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { getInitials } from "../utils/helpers";
 import {
   Bell,
   Menu,
@@ -14,7 +15,7 @@ import "../styles/NurseDashboard.css";
 
 function NurseDashboard() {
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { user, token, unreadCount } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shifts, setShifts] = useState([]);
@@ -39,12 +40,6 @@ function NurseDashboard() {
     }
   }, [token, fetchMyShifts]);
 
-  const getInitials = (name) => {
-    if (!name) return "NS";
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.substring(0, 2).toUpperCase();
-  };
 
   const nurseName = user ? user.username : "Nurse";
   const nurseDept = user ? user.department || "General Ward" : "ICU Ward A";
@@ -95,7 +90,7 @@ function NurseDashboard() {
               onClick={() => navigate("/notifications")}
             >
               <Bell size={22} />
-              <span>2</span>
+              <span>{unreadCount || 0}</span>
             </button>
 
             <button

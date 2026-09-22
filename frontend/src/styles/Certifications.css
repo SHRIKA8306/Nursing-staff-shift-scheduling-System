@@ -1,0 +1,32 @@
+.certifications-page {
+  padding: 32px;
+  color: white;
+}
+
+.certifications-page h1 {
+  margin-bottom: 20px;
+}
+
+.cert-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.cert-table th,
+.cert-table td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid #334155;
+}
+
+.cert-table th {
+  color: #94a3b8;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cert-table td {
+  color: #e2e8f0;
+}

@@ -11,12 +11,24 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('nurse_sync_token') || null);
   const [role, setRole] = useState(() => localStorage.getItem('nurse_sync_role') || null);
   const [loading, setLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (token) {
       localStorage.setItem('nurse_sync_token', token);
+      fetch('/api/notifications', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setUnreadCount(data.filter(n => !n.read).length);
+        }
+      })
+      .catch(err => console.error(err));
     } else {
       localStorage.removeItem('nurse_sync_token');
+      setUnreadCount(0);
     }
 
     if (user) {
@@ -110,6 +122,8 @@ export const AuthProvider = ({ children }) => {
         loginNurse,
         setAuthSession,
         logout,
+        unreadCount,
+        setUnreadCount,
         isAuthenticated: !!token && !!user
       }}
     >

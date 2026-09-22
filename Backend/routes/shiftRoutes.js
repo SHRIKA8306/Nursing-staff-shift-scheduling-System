@@ -36,17 +36,46 @@ router.post('/assign', auth, async (req, res) => {
     const { error, value } = shiftValidationSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
-    const newShift = await Shift.create({
+    const shiftData = {
       nurse: value.nurseId,
       date: value.date,
       shiftType: value.shiftType,
-      startTime: value.startTime || (value.shiftType === 'Morning' ? '07:00' : value.shiftType === 'Evening' ? '15:00' : '23:00'),
-      endTime: value.endTime || (value.shiftType === 'Morning' ? '15:00' : value.shiftType === 'Evening' ? '23:00' : '07:00'),
+      startTime: value.startTime || (value.shiftType === 'Morning' ? '06:00' : value.shiftType === 'Evening' ? '14:00' : '22:00'),
+      endTime: value.endTime || (value.shiftType === 'Morning' ? '14:00' : value.shiftType === 'Evening' ? '22:00' : '06:00'),
       department: value.department || 'General',
       notes: value.notes || ''
-    });
+    };
 
+    const ScheduleRuleEngine = require('../utils/ScheduleRuleEngine');
+    const { AuditLog } = require('../model/auditLog');
+    const violations = await ScheduleRuleEngine.validateAssignment(shiftData, value.nurseId);
+    
+    if (violations.length > 0 && !req.body.override) {
+      return res.status(400).json({ message: 'Rule engine validation failed', violations });
+    }
+
+    if (violations.length > 0 && req.body.override) {
+      if (!req.body.overrideReason) {
+        return res.status(400).json({ message: 'overrideReason is required when bypassing rule engine.' });
+      }
+      await AuditLog.create({
+        user: req.user.id,
+        action: 'SHIFT_ASSIGN_OVERRIDE',
+        reason: req.body.overrideReason,
+        details: { violations, shiftData }
+      });
+    }
+
+    const newShift = await Shift.create(shiftData);
     await newShift.populate('nurse', 'username email department');
+
+    if (!req.body.override) {
+      await AuditLog.create({
+        user: req.user.id,
+        action: 'SHIFT_ASSIGN',
+        details: { shiftId: newShift._id }
+      });
+    }
 
     // Notify assigned nurse
     await Notification.create({
