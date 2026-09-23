@@ -2570,10 +2570,76 @@ body {
   color: white;
 }
 
+.live-clock-badge.admin-header-clock {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  font-weight: 700;
+}
+.live-clock-badge.admin-header-clock .live-clock-time {
+  color: #0f172a;
+  font-weight: 800;
+}
+
 .live-clock-icon {
   font-size: 15px;
 }
 
 .live-clock-divider {
   opacity: 0.5;
+}
+
+/* =========================================================
+   GLOBAL DARK THEME OVERRIDES
+========================================================= */
+body.dark-theme,
+[data-theme='dark'] body {
+  background-color: #0b1329 !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .nurse-main,
+body.dark-theme .settings-main,
+body.dark-theme .attendance-main,
+body.dark-theme .nurse-layout {
+  background-color: #0b1329 !important;
+}
+
+body.dark-theme .nurse-header,
+body.dark-theme .settings-header,
+body.dark-theme .attendance-header {
+  background-color: #0f172a !important;
+  border-bottom-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .settings-card,
+body.dark-theme .weekly-attendance-card,
+body.dark-theme .stats-card-widget,
+body.dark-theme .admin-reports,
+body.dark-theme .schedule-card {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme strong,
+body.dark-theme .settings-page-heading h1,
+body.dark-theme .settings-card h2 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme p,
+body.dark-theme label,
+body.dark-theme span {
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme input {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }

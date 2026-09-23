@@ -287,16 +287,13 @@
 ========================================== */
 
 .settings-main {
-  margin-left: 300px;
-
-  width: calc(100% - 300px);
-
+  flex: 1;
+  min-width: 0;
+  margin-left: 0;
+  width: 100%;
   height: 100vh;
-
   overflow-y: auto;
-
   position: relative;
-
   padding-bottom: 60px;
 }
 

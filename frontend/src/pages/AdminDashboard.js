@@ -68,56 +68,66 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="nurse-dashboard-layout">
+    <div className="nurse-layout">
       {/* Sidebar */}
       <AdminSidebar />
 
       {/* Main Content */}
-      <main className="nurse-main-content">
+      <main className="nurse-main">
         
         {/* Header */}
-        <header className="nurse-header" style={{ justifyContent: 'space-between' }}>
-          <div>
-            <h1 style={{ fontSize: '24px', fontWeight: '800', margin: 0, color: '#0f172a' }}>
-              Administrator Overview
-            </h1>
-            <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '14px' }}>
-              Healthcare Workforce Platform & Nurse Roster Management
-            </p>
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1 style={{ fontSize: '22px', fontWeight: '800', margin: 0, color: '#0f172a' }}>
+                Administrator Overview
+              </h1>
+              <p style={{ margin: '2px 0 0', color: '#64748b', fontSize: '13px' }}>
+                Healthcare Workforce Platform & Nurse Roster Management
+              </p>
+            </div>
           </div>
 
-          {/* Real-time Live Clock */}
-          <LiveClock showDate={true} showTime={true} />
+          <div className="header-right">
+            {/* Real-time Live Clock with high-contrast font color */}
+            <LiveClock showDate={true} showTime={true} className="admin-header-clock" />
+          </div>
         </header>
 
-        {/* Hero Welcome Card */}
-        <div 
-          className="dashboard-welcome-card"
-          style={{
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%)',
-            borderRadius: '24px',
-            padding: '32px',
-            color: 'white',
-            marginBottom: '28px',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 10px 25px rgba(15, 23, 42, 0.15)'
-          }}
-        >
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <span style={{ 
-              background: 'rgba(20, 184, 166, 0.2)', 
-              color: '#2dd4bf', 
-              padding: '6px 14px', 
-              borderRadius: '20px', 
-              fontSize: '13px', 
-              fontWeight: '600' 
-            }}>
-              System Admin Active
-            </span>
-            <h2 style={{ fontSize: '28px', fontWeight: '800', margin: '14px 0 8px', color: 'white' }}>
-              Welcome back, {user ? user.username : 'Administrator'} 👋
-            </h2>
+        {/* Dashboard Content Container matching Nurse Dashboard */}
+        <div className="dashboard-content">
+
+          {/* Hero Welcome Card matching Nurse Portal sizing */}
+          <section 
+            className="dashboard-hero"
+            style={{
+              minHeight: '276px',
+              padding: '30px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%)',
+              color: 'white',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 10px 25px rgba(15, 23, 42, 0.15)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }}
+          >
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <span style={{ 
+                background: 'rgba(20, 184, 166, 0.2)', 
+                color: '#2dd4bf', 
+                padding: '6px 14px', 
+                borderRadius: '20px', 
+                fontSize: '13px', 
+                fontWeight: '600' 
+              }}>
+                System Admin Active
+              </span>
+              <h2 style={{ fontSize: '28px', fontWeight: '800', margin: '14px 0 8px', color: 'white' }}>
+                Welcome back, {user ? user.username : 'Administrator'} 👋
+              </h2>
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '15px', maxWidth: '600px' }}>
               Manage nursing staff, assign shift schedules, review leave applications, and balance department workforce allocation across the hospital.
             </p>
@@ -157,6 +167,7 @@ function AdminDashboard() {
               </button>
             </div>
           </div>
+        </section>
         </div>
 
         {/* Stats Grid */}

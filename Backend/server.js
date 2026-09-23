@@ -61,7 +61,6 @@ app.use('/api/swaps', require('./routes/swapRoutes'));
 app.use('/api/leaves', require('./routes/leaveRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
-app.use('/api/certifications', require('./routes/certificationRoutes'));
 
 app.use('/api/audit-logs', require('./routes/auditRoutes'));
 app.use('/api/broadcast', require('./routes/broadcastRoutes'));

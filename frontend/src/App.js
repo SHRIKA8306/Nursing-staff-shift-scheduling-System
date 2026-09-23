@@ -21,7 +21,6 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import AdminReports from "./pages/AdminReports";
 import AuditLogs from "./pages/AuditLogs";
-import Certifications from "./pages/Certifications";
 
 function App() {
   return (
@@ -61,14 +60,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AuditLogs />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/certifications"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <Certifications />
               </ProtectedRoute>
             }
           />

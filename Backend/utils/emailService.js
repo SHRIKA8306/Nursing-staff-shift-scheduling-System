@@ -128,4 +128,78 @@ const sendApprovalEmail = async (toEmail, toName, type, status, details = {}) =>
   }
 };
 
-module.exports = { sendApprovalEmail };
+/**
+ * Send an email notification to Admin when a nurse submits a request or leave.
+ * @param {string} nurseName  - Name of nurse submitting request
+ * @param {string} requestType - 'Leave Request' or 'Shift Swap Request'
+ * @param {object} details     - Details of request (reason, dates, etc.)
+ */
+const sendAdminNotificationEmail = async (nurseName, requestType, details = {}) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('[Email] EMAIL_USER or EMAIL_PASS not set in .env — skipping admin notification email.');
+    return;
+  }
+
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+  const subjectLine = `🚨 New Nurse Submission: ${requestType} from ${nurseName}`;
+
+  let bodyDetails = '';
+  if (details.startDate && details.endDate) {
+    bodyDetails += `<p><strong>Period:</strong> ${new Date(details.startDate).toLocaleDateString()} to ${new Date(details.endDate).toLocaleDateString()}</p>`;
+  }
+  if (details.leaveType) {
+    bodyDetails += `<p><strong>Leave Type:</strong> ${details.leaveType}</p>`;
+  }
+  if (details.reason) {
+    bodyDetails += `<p><strong>Reason:</strong> ${details.reason}</p>`;
+  }
+
+  const html = `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="UTF-8"></head>
+  <body style="margin:0;padding:0;background:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 0;">
+      <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#0f172a;border-radius:16px;overflow:hidden;max-width:600px;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#6366f1,#3b82f6);padding:32px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700;">NurseSync Admin Alert</h1>
+              <p style="margin:8px 0 0;color:#e0e7ff;font-size:13px;">New Request Submitted</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 36px;color:#cbd5e1;font-size:15px;line-height:1.7;">
+              <p style="margin:0 0 16px;">Dear <strong style="color:#f8fafc;">Administrator</strong>,</p>
+              <p>Nurse <strong style="color:#38bdf8;">${nurseName}</strong> has submitted a new <strong>${requestType}</strong>.</p>
+              <div style="background:#1e293b;border-left:4px solid #3b82f6;padding:16px;border-radius:6px;margin:16px 0;">
+                ${bodyDetails}
+              </div>
+              <p style="margin-top:24px;color:#94a3b8;font-size:13px;">
+                Please log into the Admin Control Portal to review and approve or reject this request.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+  </html>
+  `;
+
+  try {
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `"NurseSync System" <${process.env.EMAIL_USER}>`,
+      to: adminEmail,
+      subject: subjectLine,
+      html,
+    });
+    console.log(`[Email] Sent admin notification email for ${requestType} from ${nurseName} to ${adminEmail}`);
+  } catch (err) {
+    console.error(`[Email] Failed to send admin notification email:`, err.message);
+  }
+};
+
+module.exports = { sendApprovalEmail, sendAdminNotificationEmail };
+

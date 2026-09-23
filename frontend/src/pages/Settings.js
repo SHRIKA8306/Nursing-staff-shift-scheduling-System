@@ -1,19 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
+import AdminSidebar from "../components/AdminSidebar";
+import NurseSidebar from "../components/NurseSidebar";
 import {
-  Heart,
-  LayoutDashboard,
-  CalendarDays,
-  ArrowLeftRight,
-  FileText,
-  Clock3,
   Bell,
-  UserRound,
-  Settings as SettingsIcon,
-  LogOut,
   Menu,
-  X,
   Eye,
   EyeOff,
 } from "lucide-react";
@@ -21,12 +13,43 @@ import { getInitials } from "../utils/helpers";
 import "../styles/Settings.css";
 
 function Settings() {
-  const { user, logout, unreadCount } = useAuth();
+  const { user, logout, unreadCount, role } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const nurseName = user ? user.username : "Nurse";
-  const nurseDept = user ? user.department || "General Ward" : "ICU";
-  const nurseEmpId = user ? user.employeeId || "EMP-001" : "EMP-001";
+
+  // Appearance / Theme
+  const [appearance, setAppearance] = useState(() => {
+    return localStorage.getItem("nursesync_theme") || "Light";
+  });
+
+  const applyTheme = (themeMode) => {
+    setAppearance(themeMode);
+    localStorage.setItem("nursesync_theme", themeMode);
+    
+    const root = document.documentElement;
+    if (themeMode === "Dark") {
+      document.body.classList.add("dark-theme");
+      root.setAttribute("data-theme", "dark");
+    } else if (themeMode === "Light") {
+      document.body.classList.remove("dark-theme");
+      root.setAttribute("data-theme", "light");
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (prefersDark) {
+        document.body.classList.add("dark-theme");
+        root.setAttribute("data-theme", "dark");
+      } else {
+        document.body.classList.remove("dark-theme");
+        root.setAttribute("data-theme", "light");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("nursesync_theme") || "Light";
+    applyTheme(saved);
+  }, []);
 
   // Notification settings
   const [notifications, setNotifications] = useState({
@@ -51,9 +74,6 @@ function Settings() {
 
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
-
-  // Appearance
-  const [appearance, setAppearance] = useState("Light");
 
   const toggleNotification = (name) => {
     setNotifications((previous) => ({
@@ -82,160 +102,11 @@ function Settings() {
     setConfirmPassword("");
   };
 
-  const handleLogout = () => {
-    logout();
-    window.location.href = "/";
-  };
-
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: user?.role === 'admin' ? "/admin-dashboard" : "/nurse-dashboard",
-    },
-    {
-      name: "My Schedule",
-      icon: CalendarDays,
-      path: "/my-schedule",
-    },
-    {
-      name: "Shift Swap",
-      icon: ArrowLeftRight,
-      path: "/shift-swap",
-    },
-    {
-      name: "Leave Management",
-      icon: FileText,
-      path: "/leave-management",
-    },
-    {
-      name: "Attendance",
-      icon: Clock3,
-      path: "/attendance",
-    },
-    {
-      name: "Notifications",
-      icon: Bell,
-      path: "/notifications",
-      badge: 2,
-    },
-    {
-      name: "Profile",
-      icon: UserRound,
-      path: "/profile",
-    },
-    {
-      name: "Settings",
-      icon: SettingsIcon,
-      path: "/settings",
-    },
-  ];
-
   return (
-    <div className="settings-page">
+    <div className="nurse-layout">
 
       {/* SIDEBAR */}
-      <aside
-        className={`settings-sidebar ${
-          sidebarOpen ? "settings-sidebar-open" : ""
-        }`}
-      >
-
-        {/* Mobile Close */}
-        <button
-          className="settings-sidebar-close"
-          onClick={() => setSidebarOpen(false)}
-        >
-          <X size={22} />
-        </button>
-
-        {/* Brand */}
-        <div className="settings-brand">
-
-          <div className="settings-brand-icon">
-            <Heart
-              size={25}
-              strokeWidth={2.3}
-            />
-          </div>
-
-          <div>
-            <h2>NurseSync AI</h2>
-            <p>Nurse Portal</p>
-          </div>
-
-        </div>
-
-        {/* Navigation */}
-        <nav className="settings-navigation">
-
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <button
-                key={item.name}
-                type="button"
-                className={`settings-nav-item ${
-                  item.name === "Settings"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() => {
-                  window.location.href = item.path;
-                }}
-              >
-
-                <Icon
-                  size={21}
-                  strokeWidth={1.8}
-                />
-
-                <span>{item.name}</span>
-
-                {item.badge && (
-                  <span className="settings-notification-badge">
-                    {item.badge}
-                  </span>
-                )}
-
-              </button>
-            );
-          })}
-
-        </nav>
-
-        {/* Bottom Sidebar */}
-        <div className="settings-sidebar-bottom">
-
-          <button
-            type="button"
-            className="settings-logout-button"
-            onClick={handleLogout}
-          >
-            <LogOut size={21} />
-            <span>Logout</span>
-          </button>
-
-          <div className="settings-sidebar-profile">
-
-            <div className="settings-profile-avatar">
-              {getInitials(nurseName)}
-            </div>
-
-            <div className="settings-profile-info">
-              <strong>{nurseName}</strong>
-
-              <span>
-                {nurseDept} · {nurseEmpId}
-              </span>
-            </div>
-
-          </div>
-
-        </div>
-
-      </aside>
+      {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       {/* MAIN AREA */}
       <main className="settings-main">
@@ -648,7 +519,7 @@ function Settings() {
           <section className="settings-card appearance-card">
 
             <h2>
-              Appearance
+              Appearance Theme
             </h2>
 
             <div className="appearance-options">
@@ -660,9 +531,7 @@ function Settings() {
                     ? "selected"
                     : ""
                 }`}
-                onClick={() =>
-                  setAppearance("System")
-                }
+                onClick={() => applyTheme("System")}
               >
                 💻
                 <span>System</span>
@@ -676,9 +545,7 @@ function Settings() {
                     ? "selected"
                     : ""
                 }`}
-                onClick={() =>
-                  setAppearance("Light")
-                }
+                onClick={() => applyTheme("Light")}
               >
                 🌞
                 <span>Light</span>
@@ -692,9 +559,7 @@ function Settings() {
                     ? "selected"
                     : ""
                 }`}
-                onClick={() =>
-                  setAppearance("Dark")
-                }
+                onClick={() => applyTheme("Dark")}
               >
                 🌙
                 <span>Dark</span>
@@ -702,6 +567,50 @@ function Settings() {
 
             </div>
 
+          </section>
+
+
+          {/* =====================================
+              ACCOUNT & SESSION (LOGOUT)
+          ===================================== */}
+          <section className="settings-card logout-card" style={{ borderLeft: '4px solid #ef4444', marginTop: '32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+              <div>
+                <h2 style={{ color: '#ef4444', margin: 0, fontSize: '18px', fontWeight: '800' }}>
+                  Account Session & Logout
+                </h2>
+                <p style={{ margin: '6px 0 0', color: '#64748b', fontSize: '14px' }}>
+                  Active User: <strong style={{ color: '#0f172a' }}>{nurseName}</strong> ({role ? role.toUpperCase() : 'USER'}) · Employee ID: {user ? user.employeeId || 'EMP-001' : 'EMP-001'}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="settings-logout-btn"
+                style={{
+                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '700',
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 14px rgba(239, 68, 68, 0.3)',
+                  transition: 'transform 0.2s ease'
+                }}
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to log out of NurseSync AI?")) {
+                    logout();
+                    window.location.href = "/";
+                  }
+                }}
+              >
+                <span>🔒</span> Sign Out of NurseSync AI
+              </button>
+            </div>
           </section>
 
         </div>

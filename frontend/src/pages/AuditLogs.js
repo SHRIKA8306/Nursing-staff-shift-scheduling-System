@@ -34,44 +34,44 @@ function AuditLogs() {
   if (role !== "admin") return <p style={{ color: "white", padding: 40 }}>Access denied.</p>;
 
   return (
-    <div className="attendance-layout">
+    <div className="nurse-layout">
       <AdminSidebar />
 
-      <main className="attendance-main">
-        <header className="attendance-header">
-          <div className="attendance-header-left">
-            <button className="attendance-menu-button" type="button">
+      <main className="nurse-main">
+        <header className="nurse-header">
+          <div className="header-left">
+            <button className="menu-toggle" type="button">
               <Menu size={25} />
             </button>
-            <div className="attendance-welcome">
-              <h3>Welcome back, {adminName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+            <div className="welcome-text">
+              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '800' }}>System Audit Logs</h3>
+              <LiveClock showDate={true} showTime={true} className="admin-header-clock" />
             </div>
           </div>
-          <div className="attendance-header-right">
-            <button className="attendance-notification" type="button">
+          <div className="header-right">
+            <button className="header-notification" type="button">
               <Bell size={21} /><span>{unreadCount || 0}</span>
             </button>
-            <div className="attendance-avatar">{getInitials(adminName)}</div>
+            <div className="header-avatar">{getInitials(adminName)}</div>
           </div>
         </header>
 
-        <div className="attendance-content">
-          <div className="attendance-page-heading">
+        <div className="schedule-content" style={{ padding: '28px' }}>
+          <div className="schedule-heading">
             <h1>Audit Logs</h1>
-            <p>View system activity and override records</p>
+            <p>View system activity, shift assignments, and override records</p>
           </div>
 
-          <section className="weekly-attendance-card">
-            <div className="weekly-attendance-header">
-              <h2>System Audit Trail</h2>
-              <p>All recorded actions</p>
+          <section className="weekly-attendance-card" style={{ borderRadius: '20px', padding: '24px' }}>
+            <div className="weekly-attendance-header" style={{ marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>System Audit Trail</h2>
+              <p style={{ margin: '4px 0 0', color: '#64748b' }}>All recorded administrative actions and rule engine logs</p>
             </div>
             <div className="attendance-table-wrapper">
-              <table className="attendance-table">
+              <table className="attendance-table" style={{ width: '100%' }}>
                 <thead>
                   <tr>
-                    <th>DATE</th>
+                    <th>DATE & TIME</th>
                     <th>USER</th>
                     <th>ACTION</th>
                     <th>REASON</th>
@@ -86,11 +86,24 @@ function AuditLogs() {
                   ) : (
                     logs.map((log) => (
                       <tr key={log._id}>
-                        <td>{new Date(log.createdAt).toLocaleString()}</td>
-                        <td>{log.user?.username || "System"}</td>
-                        <td>{log.action}</td>
-                        <td>{log.reason || "—"}</td>
-                        <td>{log.details ? JSON.stringify(log.details) : "—"}</td>
+                        <td style={{ fontWeight: '600', color: '#64748b' }}>{new Date(log.createdAt).toLocaleString()}</td>
+                        <td style={{ fontWeight: '700', color: '#0f172a' }}>{log.user?.username || "System Admin"}</td>
+                        <td>
+                          <span style={{ 
+                            background: '#e0f2fe', 
+                            color: '#0369a1', 
+                            padding: '4px 10px', 
+                            borderRadius: '12px', 
+                            fontSize: '12px', 
+                            fontWeight: '700' 
+                          }}>
+                            {log.action}
+                          </span>
+                        </td>
+                        <td>{log.reason || "System Operation"}</td>
+                        <td style={{ fontFamily: 'monospace', fontSize: '12px', color: '#475569' }}>
+                          {log.details ? JSON.stringify(log.details) : "—"}
+                        </td>
                       </tr>
                     ))
                   )}
@@ -99,13 +112,7 @@ function AuditLogs() {
             </div>
           </section>
         </div>
-
-        <footer className="attendance-footer">
-          <span>© 2026 NurseSync AI · Admin Portal</span>
-          <span className="attendance-system-status"><span></span>System Online</span>
-        </footer>
       </main>
-      <button className="attendance-help-button" type="button"><CircleHelp size={23} /></button>
     </div>
   );
 }

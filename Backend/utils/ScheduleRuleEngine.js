@@ -142,19 +142,6 @@ class ScheduleRuleEngine {
       violations.push("A nurse on approved leave cannot be assigned a shift.");
     }
 
-    // Rule 8: Certification expiration check for ICU / ER
-    if (['ICU', 'ER', 'Emergency'].includes(shift.department)) {
-      if (profile.certifications && profile.certifications.some(c => c.status === 'Expired')) {
-        violations.push("A nurse with an expired certification cannot be assigned to ICU or Emergency.");
-      }
-    }
-
-    // Rule 7: Skill mix (approximate check: we assume ICU needs 2 ACLS nurses)
-    // To do this perfectly we'd need to check all other nurses on this shift.
-    // We will skip full simulation of this for now unless it's a swap, but if this assignment breaks it, 
-    // it's actually adding a nurse so it shouldn't break minimums unless it's a removal.
-    // We will validate skill mix in the swap/remove operations.
-
     return violations;
   }
 }

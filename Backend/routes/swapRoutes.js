@@ -4,7 +4,7 @@ const { Shift } = require('../model/shift');
 const { Notification } = require('../model/notification');
 const { User } = require('../model/user');
 const auth = require('../middleware/auth');
-const { sendApprovalEmail } = require('../utils/emailService');
+const { sendApprovalEmail, sendAdminNotificationEmail } = require('../utils/emailService');
 
 
 // @route   GET /api/swaps
@@ -51,6 +51,13 @@ router.post('/request', auth, async (req, res) => {
       message: `${req.user.username} has requested a shift swap with you.`,
       type: 'swap_request'
     });
+
+    // Send notification email to admin
+    await sendAdminNotificationEmail(
+      newSwap.requester ? newSwap.requester.username : (req.user.username || 'Nurse'),
+      'Shift Swap Request',
+      { reason: value.reason }
+    );
 
     res.status(201).json(newSwap);
   } catch (err) {

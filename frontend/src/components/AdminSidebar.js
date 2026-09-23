@@ -34,7 +34,6 @@ function AdminSidebar() {
     },
     { name: "Reports & Fairness", icon: "📊", path: "/admin-reports" },
     { name: "Audit Logs", icon: "📝", path: "/audit-logs" },
-    { name: "Certifications", icon: "📄", path: "/certifications" },
     {
       name: "Attendance Logs",
       icon: "◷",

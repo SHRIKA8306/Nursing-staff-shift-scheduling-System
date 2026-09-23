@@ -44,6 +44,34 @@ function MySchedule() {
   };
 
 
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAIScheduling = async () => {
+    if (!window.confirm("Run AI Smart Roster Generator for the next 7 days?")) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/shifts/ai-schedule", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ days: 7 })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`✨ ${data.message}`);
+        fetchSchedule();
+      } else {
+        alert(`AI Scheduling failed: ${data.message}`);
+      }
+    } catch (err) {
+      alert("AI Scheduling error: " + err.message);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const nurseName = user ? user.username : "Nurse";
   const nurseDept = user ? user.department || "General Ward" : "ICU";
 
@@ -115,13 +143,23 @@ function MySchedule() {
               <p>{role === 'admin' ? "Manage and view all staff shifts" : `Your shift schedule — ${nurseName} (${user ? user.employeeId : 'EMP-001'})`}</p>
             </div>
             {role === 'admin' && (
-              <button 
-                className="sign-in-button" 
-                style={{ width: 'auto', padding: '0 20px', height: '42px', marginTop: 0 }}
-                onClick={() => document.getElementById('assignShiftModal').style.display = 'flex'}
-              >
-                ➕ Assign Shift
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  className="sign-in-button" 
+                  style={{ width: 'auto', padding: '0 20px', height: '42px', marginTop: 0, background: 'linear-gradient(135deg, #8b5cf6, #6366f1)' }}
+                  onClick={handleAIScheduling}
+                  disabled={aiLoading}
+                >
+                  {aiLoading ? "🤖 Generating..." : "✨ AI Auto-Scheduler"}
+                </button>
+                <button 
+                  className="sign-in-button" 
+                  style={{ width: 'auto', padding: '0 20px', height: '42px', marginTop: 0 }}
+                  onClick={() => document.getElementById('assignShiftModal').style.display = 'flex'}
+                >
+                  ➕ Assign Shift
+                </button>
+              </div>
             )}
           </div>
 

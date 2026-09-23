@@ -3,7 +3,7 @@ const { LeaveRequest, leaveValidationSchema } = require('../model/leaveRequest')
 const { Notification } = require('../model/notification');
 const { User } = require('../model/user');
 const auth = require('../middleware/auth');
-const { sendApprovalEmail } = require('../utils/emailService');
+const { sendApprovalEmail, sendAdminNotificationEmail } = require('../utils/emailService');
 
 
 // @route   GET /api/leaves
@@ -40,6 +40,18 @@ router.post('/apply', auth, async (req, res) => {
     });
 
     await newLeave.populate('nurse', 'username email department');
+
+    // Notify admin via email
+    await sendAdminNotificationEmail(
+      newLeave.nurse ? newLeave.nurse.username : (req.user.username || 'Nurse'),
+      'Leave Request',
+      {
+        startDate: value.startDate,
+        endDate: value.endDate,
+        leaveType: value.leaveType || 'Casual',
+        reason: value.reason
+      }
+    );
 
     res.status(201).json(newLeave);
   } catch (err) {

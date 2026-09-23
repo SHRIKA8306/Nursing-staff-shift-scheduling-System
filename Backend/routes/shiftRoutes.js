@@ -122,4 +122,112 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/shifts/ai-schedule
+// @desc    AI Smart Roster Generator & Auto-Scheduling
+router.post('/ai-schedule', auth, async (req, res) => {
+  try {
+    const { User } = require('../model/user');
+    const { LeaveRequest } = require('../model/leaveRequest');
+    const { AuditLog } = require('../model/auditLog');
+    const ScheduleRuleEngine = require('../utils/ScheduleRuleEngine');
+
+    const daysCount = req.body.days || 7;
+    const startDate = req.body.startDate ? new Date(req.body.startDate) : new Date();
+    startDate.setHours(0, 0, 0, 0);
+
+    // Fetch active nurses
+    const nurses = await User.find({ role: { $in: ['nurse', 'head_nurse'] } });
+    if (nurses.length === 0) {
+      return res.status(400).json({ message: 'No active nurses found to schedule.' });
+    }
+
+    const shiftTypes = [
+      { type: 'Morning', startTime: '06:00', endTime: '14:00' },
+      { type: 'Evening', startTime: '14:00', endTime: '22:00' },
+      { type: 'Night', startTime: '22:00', endTime: '06:00' }
+    ];
+
+    const generatedShifts = [];
+    const createdShifts = [];
+
+    // Loop through days and shift types to auto-assign
+    let nurseIndex = 0;
+    for (let dayOffset = 0; dayOffset < daysCount; dayOffset++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + dayOffset);
+
+      // Fetch approved leaves for this date
+      const activeLeaves = await LeaveRequest.find({
+        status: 'Approved',
+        startDate: { $lte: currentDate },
+        endDate: { $gte: currentDate }
+      });
+      const onLeaveNurseIds = new Set(activeLeaves.map(l => l.nurse.toString()));
+
+      for (const st of shiftTypes) {
+        // Try to find an eligible nurse
+        let assignedNurse = null;
+        let attempts = 0;
+
+        while (attempts < nurses.length) {
+          const candidate = nurses[nurseIndex % nurses.length];
+          nurseIndex++;
+          attempts++;
+
+          // Skip if candidate on leave
+          if (onLeaveNurseIds.has(candidate._id.toString())) {
+            continue;
+          }
+
+          const shiftCandidate = {
+            nurse: candidate._id,
+            date: currentDate,
+            shiftType: st.type,
+            startTime: st.startTime,
+            endTime: st.endTime,
+            department: candidate.department || 'General',
+            notes: 'AI Smart Scheduled'
+          };
+
+          // Validate constraints using rule engine
+          const violations = await ScheduleRuleEngine.validateAssignment(shiftCandidate, candidate._id);
+          if (violations.length === 0) {
+            assignedNurse = candidate;
+            
+            // Create shift in DB
+            const newShift = await Shift.create(shiftCandidate);
+            await newShift.populate('nurse', 'username email department employeeId');
+            createdShifts.push(newShift);
+            break;
+          }
+        }
+
+        if (assignedNurse) {
+          generatedShifts.push({
+            date: currentDate.toDateString(),
+            shiftType: st.type,
+            nurse: assignedNurse.username,
+            department: assignedNurse.department || 'General'
+          });
+        }
+      }
+    }
+
+    await AuditLog.create({
+      user: req.user.id,
+      action: 'AI_SCHEDULE_GENERATE',
+      details: { totalGenerated: createdShifts.length, daysCount }
+    });
+
+    res.status(201).json({
+      message: `AI Scheduler generated ${createdShifts.length} optimal shifts successfully across ${daysCount} days with 0 rule violations.`,
+      count: createdShifts.length,
+      shifts: createdShifts
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'AI Scheduling Error: ' + err.message });
+  }
+});
+
 module.exports = router;
+
