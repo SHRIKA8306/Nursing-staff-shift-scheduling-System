@@ -13,7 +13,7 @@ import { getInitials } from "../utils/helpers";
 import "../styles/Settings.css";
 
 function Settings() {
-  const { user, logout, unreadCount, role } = useAuth();
+  const { user, logout, unreadCount, role, token } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const nurseName = user ? user.username : "Nurse";
@@ -84,22 +84,51 @@ function Settings() {
 
   const handlePasswordUpdate = (event) => {
     event.preventDefault();
-
     if (!currentPassword || !newPassword || !confirmPassword) {
       alert("Please fill all password fields.");
       return;
     }
-
     if (newPassword !== confirmPassword) {
       alert("New password and confirm password do not match.");
       return;
     }
-
     alert("Password updated successfully.");
-
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+  };
+
+  // Test Email State
+  const [testEmailTarget, setTestEmailTarget] = useState(user?.email || "shrika080306@gmail.com");
+  const [testEmailLoading, setTestEmailLoading] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState(null);
+
+  const handleSendTestEmail = async (e) => {
+    e.preventDefault();
+    setTestEmailLoading(true);
+    setTestEmailResult(null);
+
+    const authToken = token || localStorage.getItem("nurse_sync_token") || localStorage.getItem("token");
+
+    try {
+      const res = await fetch("/api/notifications/test-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ to: testEmailTarget })
+      });
+      const data = await res.json();
+      setTestEmailResult(data);
+    } catch (err) {
+      setTestEmailResult({
+        success: false,
+        message: "Failed to connect to backend server: " + err.message
+      });
+    } finally {
+      setTestEmailLoading(false);
+    }
   };
 
   return (
@@ -107,6 +136,14 @@ function Settings() {
 
       {/* SIDEBAR */}
       {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
+
+      {/* MOBILE SIDEBAR OVERLAY */}
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* MAIN AREA */}
       <main className="settings-main">
@@ -346,10 +383,86 @@ function Settings() {
 
           </section>
 
-
           {/* =====================================
-              SECURITY
+              EMAIL NOTIFICATIONS & SMTP DIAGNOSTICS
           ===================================== */}
+          <section className="settings-card" style={{ borderLeft: "4px solid #0284c7" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: "1.2rem", color: "#0f172a" }}>📧 Email Notification & SMTP Diagnostics</h2>
+                <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.875rem" }}>
+                  Verify that approval/rejection emails and leave notifications reach real inboxes.
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSendTestEmail} style={{ marginTop: "16px" }}>
+              <div style={{ marginBottom: "14px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "#334155", marginBottom: "6px" }}>
+                  Send Test Email To:
+                </label>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <input
+                    type="email"
+                    required
+                    value={testEmailTarget}
+                    onChange={(e) => setTestEmailTarget(e.target.value)}
+                    placeholder="Enter email (e.g. shrikasenthilkumar8@gmail.com)"
+                    style={{
+                      flex: 1,
+                      padding: "10px 14px",
+                      borderRadius: "10px",
+                      border: "1px solid #cbd5e1",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={testEmailLoading}
+                    style={{
+                      background: "#0284c7",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "10px",
+                      padding: "10px 20px",
+                      fontWeight: "600",
+                      fontSize: "0.9rem",
+                      cursor: testEmailLoading ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      opacity: testEmailLoading ? 0.7 : 1
+                    }}
+                  >
+                    {testEmailLoading ? "Sending..." : "Send Test Email 🚀"}
+                  </button>
+                </div>
+              </div>
+
+              {testEmailResult && (
+                <div style={{
+                  padding: "14px 18px",
+                  borderRadius: "10px",
+                  marginTop: "16px",
+                  background: testEmailResult.success ? "#ecfdf5" : "#fef2f2",
+                  border: `1px solid ${testEmailResult.success ? "#a7f3d0" : "#fecaca"}`,
+                  color: testEmailResult.success ? "#065f46" : "#991b1b"
+                }}>
+                  <div style={{ fontWeight: "700", fontSize: "0.95rem", marginBottom: "4px" }}>
+                    {testEmailResult.success ? "✅ Success!" : "❌ Delivery Issue"}
+                  </div>
+                  <div style={{ fontSize: "0.875rem", lineHeight: "1.5" }}>
+                    {testEmailResult.message}
+                  </div>
+                  {testEmailResult.hint && (
+                    <div style={{ marginTop: "8px", fontSize: "0.825rem", color: "#b91c1c", background: "white", padding: "8px 12px", borderRadius: "6px", border: "1px solid #fecaca" }}>
+                      💡 <strong>Required Action:</strong> {testEmailResult.hint}
+                    </div>
+                  )}
+                </div>
+              )}
+            </form>
+          </section>
 
           <section className="settings-card security-card">
 

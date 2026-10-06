@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import NurseSidebar from "../components/NurseSidebar";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
@@ -23,13 +23,7 @@ function Notifications() {
 
   const [notifications, setNotifications] = useState([]);
 
-  useEffect(() => {
-    if (token) {
-      fetchNotifications();
-    }
-  }, [token]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const res = await fetch("/api/notifications", {
         headers: { Authorization: `Bearer ${token}` }
@@ -44,7 +38,13 @@ function Notifications() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, setUnreadCount]);
+
+  useEffect(() => {
+    if (token) {
+      fetchNotifications();
+    }
+  }, [token, fetchNotifications]);
 
   const filters = [
     "All",
@@ -186,8 +186,11 @@ function Notifications() {
           ========================================== */}
 
           <section className="notification-list">
-
-            {filteredNotifications.length === 0 ? (
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "40px", color: "#64748b" }}>
+                Loading notifications...
+              </div>
+            ) : filteredNotifications.length === 0 ? (
 
               <div className="empty-notifications">
 
@@ -219,22 +222,32 @@ function Notifications() {
                   };
                   const Icon = notification.icon || getIconForType(notification.type);
 
-                  return (
+                  const handleMarkSingle = async (nId) => {
+                    try {
+                      await fetch(`/api/notifications/${nId}/read`, {
+                        method: "PUT",
+                        headers: { Authorization: `Bearer ${token}` }
+                      });
+                      setNotifications(prev => prev.map(n => (n._id === nId || n.id === nId) ? { ...n, read: true } : n));
+                      setUnreadCount(prev => Math.max(0, prev - 1));
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  };
 
+                  return (
                     <div
-                      key={notification.id}
+                      key={notification._id || notification.id}
                       className={`notification-card ${
                         !notification.read
                           ? "unread"
                           : ""
                       }`}
                     >
-
                       {/* Icon */}
-
                       <div
                         className={`notification-icon ${
-                          notification.type.toLowerCase()
+                          (notification.type || "general").toLowerCase()
                         }`}
                       >
                         <Icon
@@ -243,47 +256,55 @@ function Notifications() {
                         />
                       </div>
 
-
                       {/* Content */}
-
                       <div className="notification-body">
-
                         <div className="notification-title">
-
                           <h3>
                             {notification.title}
                           </h3>
-
                           {!notification.read && (
                             <span className="unread-dot"></span>
                           )}
-
                         </div>
 
                         <p className="notification-message">
                           {notification.message}
                         </p>
 
-
-                        <span
-                          className={`notification-type ${
-                            notification.type.toLowerCase()
-                          }`}
-                        >
-                          {notification.type}
-                        </span>
-
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "6px" }}>
+                          <span
+                            className={`notification-type ${
+                              (notification.type || "general").toLowerCase()
+                            }`}
+                          >
+                            {notification.type}
+                          </span>
+                          {!notification.read && (
+                            <button
+                              type="button"
+                              onClick={() => handleMarkSingle(notification._id || notification.id)}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                color: "#0ea5e9",
+                                fontSize: "11px",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                padding: 0
+                              }}
+                            >
+                              Mark as read
+                            </button>
+                          )}
+                        </div>
                       </div>
 
-
                       {/* Time */}
-
                       <div className="notification-time">
                         {notification.createdAt ? new Date(notification.createdAt).toLocaleString() : notification.time}
                       </div>
-
                     </div>
-
                   );
                 }
               )

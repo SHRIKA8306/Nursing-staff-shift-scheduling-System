@@ -2,9 +2,10 @@ const router = require('express').Router();
 const { LeaveRequest, leaveValidationSchema } = require('../model/leaveRequest');
 const { Notification } = require('../model/notification');
 const { User } = require('../model/user');
+const { Profile } = require('../model/profile');
 const auth = require('../middleware/auth');
 const { sendApprovalEmail, sendAdminNotificationEmail } = require('../utils/emailService');
-
+const { createInAppNotification, sendSMSNotification } = require('../services/notificationService');
 
 // @route   GET /api/leaves
 // @desc    Get leave requests for the logged-in nurse (or all if admin)
@@ -39,11 +40,24 @@ router.post('/apply', auth, async (req, res) => {
       reason: value.reason
     });
 
-    await newLeave.populate('nurse', 'username email department');
+    await newLeave.populate('nurse', 'username email department employeeId');
 
-    // Notify admin via email
+    const nurseName = newLeave.nurse ? newLeave.nurse.username : (req.user.username || 'Nurse');
+
+    // 1. In-app notification for all admins
+    const admins = await User.find({ role: 'admin' });
+    for (const adm of admins) {
+      await createInAppNotification(
+        adm._id,
+        'New Leave Request',
+        `New leave request from Nurse ${nurseName}. Please review the request.`,
+        'leave_status'
+      );
+    }
+
+    // 2. Email notification to admin
     await sendAdminNotificationEmail(
-      newLeave.nurse ? newLeave.nurse.username : (req.user.username || 'Nurse'),
+      nurseName,
       'Leave Request',
       {
         startDate: value.startDate,
@@ -52,6 +66,15 @@ router.post('/apply', auth, async (req, res) => {
         reason: value.reason
       }
     );
+
+    // 3. SMS notification to admin if configured
+    const adminPhone = process.env.ADMIN_PHONE;
+    if (adminPhone) {
+      await sendSMSNotification(
+        adminPhone,
+        `NurseSync Alert: New leave request from Nurse ${nurseName}. Please review in the admin dashboard.`
+      );
+    }
 
     res.status(201).json(newLeave);
   } catch (err) {
@@ -116,18 +139,27 @@ router.put('/:id/status', auth, async (req, res) => {
     leave.status = status;
     await leave.save();
 
-    // Fetch nurse's email for email notification
+    // Fetch nurse user and profile
     const nurseUser = await User.findById(leave.nurse).select('username email');
+    const nurseProfile = await Profile.findOne({ user: leave.nurse }).select('phone');
 
-    // Send in-app notification to nurse
-    await Notification.create({
-      user: leave.nurse,
-      title: `Leave Request ${status}`,
-      message: `Your leave request from ${new Date(leave.startDate).toLocaleDateString()} to ${new Date(leave.endDate).toLocaleDateString()} has been ${status.toLowerCase()}.`,
-      type: 'leave_status'
-    });
+    const startDateFormatted = new Date(leave.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const endDateFormatted = new Date(leave.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-    // Send email notification to nurse
+    // Exact message as required by Spec 6
+    const nurseMessage = status === 'Approved'
+      ? `Your leave request from ${startDateFormatted} to ${endDateFormatted} has been approved by the administrator.`
+      : `Your leave request from ${startDateFormatted} to ${endDateFormatted} has been rejected by the administrator.`;
+
+    // 1. In-app notification to nurse
+    await createInAppNotification(
+      leave.nurse,
+      `Leave Request ${status}`,
+      nurseMessage,
+      'leave_status'
+    );
+
+    // 2. Email notification to nurse
     if (nurseUser && nurseUser.email) {
       await sendApprovalEmail(
         nurseUser.email,
@@ -142,6 +174,12 @@ router.put('/:id/status', auth, async (req, res) => {
           adminNote: req.body.adminNote || ''
         }
       );
+    }
+
+    // 3. SMS notification to nurse if phone available
+    const nursePhone = nurseProfile?.phone || nurseUser?.phone;
+    if (nursePhone) {
+      await sendSMSNotification(nursePhone, nurseMessage);
     }
 
     res.json(leave);

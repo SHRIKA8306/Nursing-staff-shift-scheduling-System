@@ -16,6 +16,40 @@ router.get('/my-schedule', auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/shifts/nurse/:id
+// @desc    Get shifts for a specific nurse (admin use)
+router.get('/nurse/:id', auth, async (req, res) => {
+  try {
+    const shifts = await Shift.find({ nurse: req.params.id })
+      .populate('nurse', 'username email department employeeId')
+      .sort({ date: 1 });
+    res.json(shifts);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching nurse schedule: ' + err.message });
+  }
+});
+
+// @route   GET /api/shifts/today
+// @desc    Get today's workforce shifts
+router.get('/today', auth, async (req, res) => {
+  try {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    const shifts = await Shift.find({
+      date: { $gte: start, $lte: end }
+    })
+      .populate('nurse', 'username email department employeeId')
+      .sort({ shiftType: 1 });
+
+    res.json(shifts);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching today shifts: ' + err.message });
+  }
+});
+
 // @route   GET /api/shifts/all
 // @desc    Get all hospital shifts (For admin/head nurse)
 router.get('/all', auth, async (req, res) => {

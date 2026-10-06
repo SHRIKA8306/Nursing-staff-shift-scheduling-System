@@ -61,10 +61,12 @@ app.use('/api/swaps', require('./routes/swapRoutes'));
 app.use('/api/leaves', require('./routes/leaveRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
-
 app.use('/api/audit-logs', require('./routes/auditRoutes'));
 app.use('/api/broadcast', require('./routes/broadcastRoutes'));
 app.use('/api/leave-impact', require('./routes/leaveImpactRoutes'));
+app.use('/api/certifications', require('./routes/certificationRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
 
 // 404 Handler – returns Not Found for unknown API endpoints
 app.use((req, res) => {

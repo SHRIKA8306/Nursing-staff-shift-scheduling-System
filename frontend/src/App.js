@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NurseManagement from "./pages/NurseManagement";
 import NurseDashboard from "./pages/NurseDashboard";
 import MySchedule from "./pages/MySchedule";
+import ScheduleManagement from "./pages/ScheduleManagement";
 import ShiftSwap from "./pages/ShiftSwap";
 import LeaveManagement from "./pages/LeaveManagement";
 import Attendance from "./pages/Attendance";
@@ -21,6 +22,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import AdminReports from "./pages/AdminReports";
 import AuditLogs from "./pages/AuditLogs";
+import AIScheduling from "./pages/AIScheduling";
 
 function App() {
   return (
@@ -60,6 +62,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AuditLogs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-scheduling"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AIScheduling />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schedule-management"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ScheduleManagement />
               </ProtectedRoute>
             }
           />

@@ -87,7 +87,9 @@ function LeaveManagement() {
     }
   };
 
-  const handleStatusChange = async (leaveId, status) => {
+  const [overrideModal, setOverrideModal] = useState({ show: false, leaveId: null, violations: [], reason: "" });
+
+  const handleStatusChange = async (leaveId, status, override = false, overrideReason = "") => {
     try {
       const res = await fetch(`/api/leaves/${leaveId}/status`, {
         method: "PUT",
@@ -95,13 +97,22 @@ function LeaveManagement() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, override, overrideReason })
       });
-      if (res.ok) {
-        fetchLeaves();
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.violations) {
+          setOverrideModal({ show: true, leaveId, violations: data.violations, reason: "" });
+        } else {
+          setErrorMessage(data.message || "Failed to update leave status");
+        }
+        return;
       }
+      if (override) setOverrideModal({ show: false, leaveId: null, violations: [], reason: "" });
+      fetchLeaves();
     } catch (err) {
       console.error("Status update error:", err);
+      setErrorMessage("Network error updating leave status");
     }
   };
 
@@ -322,6 +333,83 @@ function LeaveManagement() {
           </span>
         </footer>
       </main>
+
+      {/* Override Rule Engine Modal */}
+      {overrideModal.show && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(15, 23, 42, 0.6)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "white",
+            borderRadius: "16px",
+            width: "100%",
+            maxWidth: "500px",
+            padding: "24px",
+            boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)"
+          }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: "18px", color: "#b45309" }}>
+              ⚠️ Leave Approval Rule Conflicts Detected
+            </h3>
+            <p style={{ fontSize: "13px", color: "#475569", marginBottom: "12px" }}>
+              The scheduler detected the following overlapping shift assignments during this leave:
+            </p>
+            <ul style={{ background: "#fffbeb", border: "1px solid #fde68a", padding: "12px 28px", borderRadius: "8px", color: "#92400e", fontSize: "13px", marginBottom: "16px" }}>
+              {overrideModal.violations.map((v, i) => (
+                <li key={i}>{v}</li>
+              ))}
+            </ul>
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "600", color: "#334155", display: "block", marginBottom: "6px" }}>
+                OVERRIDE REASON (Will auto-cancel overlapping shifts) *
+              </label>
+              <input
+                type="text"
+                className="nurse-input"
+                placeholder="e.g. Approved emergency medical leave override"
+                value={overrideModal.reason}
+                onChange={e => setOverrideModal(p => ({ ...p, reason: e.target.value }))}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button
+                type="button"
+                onClick={() => setOverrideModal({ show: false, leaveId: null, violations: [], reason: "" })}
+                style={{
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontWeight: "600",
+                  cursor: "pointer"
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  if (!overrideModal.reason.trim()) {
+                    alert("Please provide an override reason.");
+                    return;
+                  }
+                  handleStatusChange(overrideModal.leaveId, "Approved", true, overrideModal.reason);
+                }}
+              >
+                Confirm & Auto-Cancel Shifts
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <button className="help-button" type="button">?</button>
     </div>

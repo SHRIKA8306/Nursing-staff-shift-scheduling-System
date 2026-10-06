@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bell, Menu, CircleHelp } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";

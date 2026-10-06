@@ -1,19 +1,22 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getInitials } from "../utils/helpers";
 import { useLocation, useNavigate } from "react-router-dom";
 import NurseSidebar from "../components/NurseSidebar";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
+import "../App.css";
 
 function ShiftSwap() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, token, role, unreadCount } = useAuth();
 
-  const selectedShift = location.state?.shift;
+  const selectedShiftState = location.state?.shift;
 
   const [nurses, setNurses] = useState([]);
+  const [myShifts, setMyShifts] = useState([]);
+  const [activeShift, setActiveShift] = useState(null);
   const [targetNurseId, setTargetNurseId] = useState("");
   const [reason, setReason] = useState("");
   const [swaps, setSwaps] = useState([]);
@@ -22,15 +25,19 @@ function ShiftSwap() {
   const [msg, setMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  useEffect(() => {
-    if (token) {
-      fetchColleagues();
-      fetchSwapRequests();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  // AI Swap Recommendations state
+  const [aiRecs, setAiRecs] = useState([]);
+  const [loadingAi, setLoadingAi] = useState(false);
 
-  const fetchColleagues = async () => {
+  // Override modal
+  const [overrideModal, setOverrideModal] = useState({
+    show: false,
+    swapId: null,
+    violations: [],
+    reason: ""
+  });
+
+  const fetchColleagues = useCallback(async () => {
     try {
       const res = await fetch("/api/users/nurses", {
         headers: { Authorization: `Bearer ${token}` }
@@ -38,14 +45,36 @@ function ShiftSwap() {
       const data = await res.json();
       if (Array.isArray(data)) {
         setNurses(data);
-        if (data.length > 0) setTargetNurseId(data[0]._id);
+        if (data.length > 0 && !targetNurseId) setTargetNurseId(data[0]._id);
       }
     } catch (err) {
       console.error("Fetch colleagues error:", err);
     }
-  };
+  }, [token, targetNurseId]);
 
-  const fetchSwapRequests = async () => {
+  const fetchMyShifts = useCallback(async () => {
+    if (role === "admin") return;
+    try {
+      const res = await fetch("/api/shifts/my-schedule", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const upcoming = data.filter(s => new Date(s.date) >= new Date(new Date().setHours(0,0,0,0)));
+        setMyShifts(upcoming);
+        if (selectedShiftState) {
+          const matched = upcoming.find(s => s._id === selectedShiftState.id || s._id === selectedShiftState._id);
+          setActiveShift(matched || selectedShiftState);
+        } else if (upcoming.length > 0) {
+          setActiveShift(upcoming[0]);
+        }
+      }
+    } catch (err) {
+      console.error("Fetch my shifts error:", err);
+    }
+  }, [token, role, selectedShiftState]);
+
+  const fetchSwapRequests = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/swaps", {
@@ -60,6 +89,45 @@ function ShiftSwap() {
     } finally {
       setLoading(false);
     }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchColleagues();
+      fetchMyShifts();
+      fetchSwapRequests();
+    }
+  }, [token, fetchColleagues, fetchMyShifts, fetchSwapRequests]);
+
+  // Fetch AI Recommendations when activeShift changes
+  const getAiRecommendations = async (shiftObj) => {
+    const sId = shiftObj?._id || shiftObj?.id;
+    if (!sId) return;
+
+    setLoadingAi(true);
+    setAiRecs([]);
+    try {
+      const res = await fetch("/api/ai/swap-recommendation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ shiftId: sId })
+      });
+      const data = await res.json();
+      if (res.ok && data.recommendations) {
+        setAiRecs(data.recommendations);
+      }
+    } catch (err) {
+      console.error("AI recommendation error:", err);
+    } finally {
+      setLoadingAi(false);
+    }
+  };
+
+  const handleSelectAiNurse = (rec) => {
+    setTargetNurseId(rec.nurseId);
   };
 
   const handleSubmitSwap = async (e) => {
@@ -67,13 +135,19 @@ function ShiftSwap() {
     setMsg("");
     setErrorMsg("");
 
-    if (!selectedShift || !selectedShift.id) {
-      setErrorMsg("Please select a shift from 'My Schedule' first before submitting a swap request.");
+    const shiftId = activeShift?._id || activeShift?.id;
+    if (!shiftId) {
+      setErrorMsg("Please select a valid scheduled shift to trade.");
       return;
     }
 
-    if (!reason) {
-      setErrorMsg("Please enter a reason for your shift swap request.");
+    if (!targetNurseId) {
+      setErrorMsg("Please select a colleague nurse for the swap.");
+      return;
+    }
+
+    if (!reason.trim()) {
+      setErrorMsg("Please enter a valid reason for the shift swap.");
       return;
     }
 
@@ -87,15 +161,15 @@ function ShiftSwap() {
         },
         body: JSON.stringify({
           targetNurseId,
-          originalShiftId: selectedShift.id,
+          originalShiftId: shiftId,
           reason
         })
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Swap request failed");
+      if (!res.ok) throw new Error(data.message || "Swap request submission failed");
 
-      setMsg("Shift swap request submitted successfully!");
+      setMsg("Shift swap request submitted successfully! Administrator and colleague have been notified.");
       setReason("");
       fetchSwapRequests();
     } catch (err) {
@@ -104,8 +178,6 @@ function ShiftSwap() {
       setSubmitting(false);
     }
   };
-
-  const [overrideModal, setOverrideModal] = useState({ show: false, swapId: null, violations: [], reason: "" });
 
   const handleStatusUpdate = async (swapId, newStatus, override = false, overrideReason = "") => {
     try {
@@ -117,9 +189,9 @@ function ShiftSwap() {
         },
         body: JSON.stringify({ status: newStatus, override, overrideReason })
       });
-      
+
       const data = await res.json();
-      
+
       if (!res.ok) {
         if (data.violations) {
           setOverrideModal({ show: true, swapId, violations: data.violations, reason: "" });
@@ -128,7 +200,7 @@ function ShiftSwap() {
         }
         return;
       }
-      
+
       if (override) setOverrideModal({ show: false, swapId: null, violations: [], reason: "" });
       fetchSwapRequests();
     } catch (err) {
@@ -137,207 +209,459 @@ function ShiftSwap() {
     }
   };
 
-
   const nurseName = user ? user.username : "Nurse";
 
   return (
-    <>
-      <div className="nurse-layout">
-        {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
+    <div className="nurse-layout">
+      {role === "admin" ? <AdminSidebar /> : <NurseSidebar />}
 
-      <div className="nurse-main">
+      <main className="nurse-main">
         <header className="nurse-header">
           <div className="header-left">
-            <button className="hamburger-button" onClick={() => navigate("/nurse-dashboard")}>☰</button>
             <div className="welcome-text">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+              <h3>{role === "admin" ? "Hospital Shift Swap Requests" : `Welcome back, ${nurseName}!`}</h3>
+              <p>{role === "admin" ? "Review, approve or reject nurse shift trade requests" : "Request shift trades with AI recommendations"}</p>
             </div>
           </div>
 
-          <div className="header-right">
-            <button className="header-notification">♧ <span>{unreadCount || 0}</span></button>
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              🔔 <span>{unreadCount || 0}</span>
+            </button>
             <div className="header-avatar">{getInitials(nurseName)}</div>
           </div>
         </header>
 
-        <main className="schedule-content">
-          <div className="schedule-heading">
-            <h1>Shift Swap Requests</h1>
-            <p>Request shift trade with eligible nursing colleagues</p>
-          </div>
-
+        <div style={{ padding: "0 32px 32px" }}>
           {msg && (
-            <div style={{ padding: '12px 16px', background: '#dcfce7', color: '#15803d', borderRadius: '12px', marginBottom: '20px' }}>
+            <div style={{ padding: "14px 18px", background: "#dcfce7", color: "#15803d", borderRadius: "10px", marginBottom: "20px", border: "1px solid #bbf7d0" }}>
               ✅ {msg}
             </div>
           )}
 
           {errorMsg && (
-            <div style={{ padding: '12px 16px', background: '#fef2f2', color: '#991b1b', borderRadius: '12px', marginBottom: '20px' }}>
+            <div style={{ padding: "14px 18px", background: "#fef2f2", color: "#991b1b", borderRadius: "10px", marginBottom: "20px", border: "1px solid #fecaca" }}>
               ⚠️ {errorMsg}
             </div>
           )}
 
-          {/* SWAP FORM CARD */}
-          <section className="schedule-card" style={{ marginBottom: '30px' }}>
-            <div className="schedule-card-header">
-              <h2>Submit New Shift Swap Request</h2>
-            </div>
-
-            <div style={{ padding: "28px" }}>
-              {selectedShift ? (
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '14px', marginBottom: '20px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '12px', fontWeight: '700', color: '#2563eb', textTransform: 'uppercase' }}>Selected Shift to Trade</span>
-                  <h3 style={{ margin: '6px 0 2px', fontSize: '18px', color: '#0f172a' }}>{selectedShift.shift} Shift — {selectedShift.date} ({selectedShift.day})</h3>
-                  <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>{selectedShift.time} · {selectedShift.department}</p>
+          {/* NURSE SWAP REQUEST FORM */}
+          {role !== "admin" && (
+            <div className="card" style={{ padding: "28px", marginBottom: "28px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#1e293b" }}>
+                    Submit New Shift Swap Request
+                  </h3>
+                  <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#64748b" }}>
+                    Choose your shift, get AI recommendations for available colleagues, and submit for admin approval.
+                  </p>
                 </div>
-              ) : (
-                <div style={{ padding: '16px', background: '#fffbeb', borderRadius: '14px', marginBottom: '20px', border: '1px solid #fef3c7', color: '#b45309' }}>
-                  💡 <strong>No shift selected yet.</strong> Go to <button type="button" onClick={() => navigate('/my-schedule')} style={{ background: 'transparent', border: 'none', color: '#2563eb', fontWeight: '700', cursor: 'pointer', textDecoration: 'underline' }}>My Schedule</button> and click <strong>"Request Swap"</strong> next to your shift.
+              </div>
+
+              {/* Active Shift Selector */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "8px" }}>
+                  SELECT YOUR SHIFT TO TRADE *
+                </label>
+                {myShifts.length === 0 ? (
+                  <div style={{ padding: "14px", background: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#64748b", fontSize: "14px" }}>
+                    No upcoming shifts available to trade. Visit <button type="button" onClick={() => navigate("/my-schedule")} style={{ color: "#0ea5e9", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", fontWeight: "600" }}>My Schedule</button>.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    {myShifts.map((s) => {
+                      const isSel = activeShift && (activeShift._id === s._id || activeShift.id === s._id);
+                      const d = new Date(s.date);
+                      return (
+                        <button
+                          key={s._id}
+                          type="button"
+                          onClick={() => {
+                            setActiveShift(s);
+                            getAiRecommendations(s);
+                          }}
+                          style={{
+                            padding: "10px 16px",
+                            borderRadius: "10px",
+                            border: isSel ? "2px solid #0ea5e9" : "1px solid #cbd5e1",
+                            background: isSel ? "#eff6ff" : "white",
+                            cursor: "pointer",
+                            textAlign: "left"
+                          }}
+                        >
+                          <div style={{ fontWeight: "700", fontSize: "13px", color: isSel ? "#0284c7" : "#1e293b" }}>
+                            {s.shiftType} Shift · {d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          </div>
+                          <div style={{ fontSize: "11px", color: "#64748b" }}>
+                            {s.startTime} - {s.endTime} ({s.department})
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* AI Recommendation Trigger & Card */}
+              {activeShift && (
+                <div style={{ marginBottom: "24px", background: "linear-gradient(135deg, #f0fdf4, #eff6ff)", borderRadius: "12px", border: "1px solid #bfdbfe", padding: "18px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontSize: "18px" }}>✦</span>
+                      <strong style={{ fontSize: "14px", color: "#0369a1" }}>AI Smart Swap Recommendations</strong>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => getAiRecommendations(activeShift)}
+                      disabled={loadingAi}
+                      style={{
+                        background: "#0ea5e9",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "6px 14px",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      {loadingAi ? "Finding Matches..." : "Get AI Recommendations"}
+                    </button>
+                  </div>
+
+                  {loadingAi && <p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>Scanning available nurses, workload distribution and department coverage...</p>}
+
+                  {aiRecs.length > 0 && (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px", marginTop: "10px" }}>
+                      {aiRecs.map((rec) => {
+                        const isChosen = targetNurseId === rec.nurseId;
+                        return (
+                          <div
+                            key={rec.nurseId}
+                            onClick={() => handleSelectAiNurse(rec)}
+                            style={{
+                              background: isChosen ? "#dbeafe" : "white",
+                              border: isChosen ? "2px solid #2563eb" : "1px solid #cbd5e1",
+                              borderRadius: "10px",
+                              padding: "12px",
+                              cursor: "pointer",
+                              transition: "all 0.2s"
+                            }}
+                          >
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                              <strong style={{ fontSize: "14px", color: "#1e293b" }}>{rec.nurseName}</strong>
+                              {rec.recommended && (
+                                <span style={{ fontSize: "10px", background: "#dcfce7", color: "#15803d", padding: "2px 6px", borderRadius: "10px", fontWeight: "700" }}>
+                                  TOP MATCH
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#475569", marginBottom: "6px" }}>
+                              {rec.department} · {rec.weeklyHours}h scheduled this week
+                            </div>
+                            <p style={{ margin: 0, fontSize: "11px", color: "#64748b", lineHeight: "1.4" }}>
+                              💡 {rec.reason}
+                            </p>
+                            <button
+                              type="button"
+                              style={{
+                                marginTop: "8px",
+                                width: "100%",
+                                padding: "4px 8px",
+                                fontSize: "11px",
+                                fontWeight: "600",
+                                background: isChosen ? "#2563eb" : "#f1f5f9",
+                                color: isChosen ? "white" : "#334155",
+                                border: "none",
+                                borderRadius: "6px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              {isChosen ? "✓ Selected as Replacement" : "Select this Nurse"}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
+              {/* Form inputs */}
               <form onSubmit={handleSubmitSwap}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#334155' }}>Select Colleague Nurse</label>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "6px" }}>
+                      TARGET NURSE COLLEAGUE *
+                    </label>
                     <select
+                      className="nurse-input"
                       value={targetNurseId}
-                      onChange={(e) => setTargetNurseId(e.target.value)}
-                      style={{ width: '100%', height: '48px', borderRadius: '12px', border: '1px solid #cbd5e1', padding: '0 14px', background: 'white' }}
+                      onChange={e => setTargetNurseId(e.target.value)}
                       required
                     >
-                      {nurses.length === 0 ? (
-                        <option value="">No other nurses registered</option>
-                      ) : (
-                        nurses.map((n) => (
-                          <option key={n._id} value={n._id}>
-                            {n.username} ({n.department} · {n.employeeId})
-                          </option>
-                        ))
-                      )}
+                      <option value="">Select a nurse colleague...</option>
+                      {nurses.map(n => (
+                        <option key={n._id} value={n._id}>
+                          {n.username} ({n.department} · {n.employeeId})
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#334155' }}>Reason for Swap</label>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "6px" }}>
+                      REASON FOR SWAP *
+                    </label>
                     <input
                       type="text"
-                      placeholder="e.g. Family emergency, personal conflict..."
+                      className="nurse-input"
+                      placeholder="e.g. Urgent family commitment, health appointment..."
                       value={reason}
-                      onChange={(e) => setReason(e.target.value)}
-                      style={{ width: '100%', height: '48px', borderRadius: '12px', border: '1px solid #cbd5e1', padding: '0 14px' }}
+                      onChange={e => setReason(e.target.value)}
                       required
                     />
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '14px' }}>
-                  <button type="submit" className="sign-in-button" disabled={submitting} style={{ width: 'auto', padding: '0 28px', height: '46px', marginTop: 0 }}>
-                    {submitting ? "Submitting..." : "Submit Swap Request"}
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <button type="submit" className="btn-primary" disabled={submitting}>
+                    {submitting ? "Submitting..." : "Submit Shift Swap Request"}
                   </button>
-                  <button type="button" onClick={() => navigate("/my-schedule")} style={{ padding: '0 20px', height: '46px', background: '#f1f5f9', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer' }}>
-                    Back to Schedule
+                  <button
+                    type="button"
+                    onClick={() => navigate("/my-schedule")}
+                    style={{
+                      background: "#f1f5f9",
+                      border: "1px solid #cbd5e1",
+                      borderRadius: "8px",
+                      padding: "10px 18px",
+                      fontWeight: "600",
+                      color: "#475569",
+                      cursor: "pointer"
+                    }}
+                  >
+                    View My Schedule
                   </button>
                 </div>
               </form>
             </div>
-          </section>
+          )}
 
-          {/* RECENT SWAP REQUESTS TABLE */}
-          <section className="schedule-card">
-            <div className="schedule-card-header">
-              <h2>My Swap Request History</h2>
+          {/* SWAP REQUESTS LIST */}
+          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: "16px 24px", borderBottom: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#1e293b" }}>
+                {role === "admin" ? "All Hospital Shift Swap Requests" : "My Shift Swap History"} ({swaps.length})
+              </h3>
             </div>
 
-            <div style={{ padding: "20px" }}>
-              {loading ? (
-                <p style={{ textAlign: 'center', color: '#64748b' }}>Loading swap requests...</p>
-              ) : swaps.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#64748b', padding: '20px' }}>No shift swap requests found.</p>
-              ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
+            {loading ? (
+              <div style={{ padding: "60px", textAlign: "center", color: "#94a3b8" }}>
+                Loading shift swaps...
+              </div>
+            ) : swaps.length === 0 ? (
+              <div style={{ padding: "60px", textAlign: "center", color: "#94a3b8" }}>
+                No shift swap requests found.
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table className="nurse-table">
                   <thead>
-                    <tr style={{ borderBottom: '2px solid #f1f5f9', color: '#475569' }}>
-                      <th style={{ padding: '12px 14px' }}>Requester</th>
-                      <th style={{ padding: '12px 14px' }}>Target Nurse</th>
-                      <th style={{ padding: '12px 14px' }}>Reason</th>
-                      <th style={{ padding: '12px 14px' }}>Status</th>
-                      <th style={{ padding: '12px 14px' }}>Actions</th>
+                    <tr>
+                      <th>Date Requested</th>
+                      <th>Requester Nurse</th>
+                      <th>Target Nurse</th>
+                      <th>Original Shift Details</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                      {role === "admin" && <th style={{ textAlign: "right" }}>Review & Action</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {swaps.map((s) => {
-                      const isMeTarget = s.targetNurse && (s.targetNurse._id === user?.id || s.targetNurse._id === user?._id);
+                      const orig = s.originalShift || {};
+                      const origDate = orig.date ? new Date(orig.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+                      const isPending = s.status === "Pending";
+
                       return (
-                        <tr key={s._id} style={{ borderBottom: '1px solid #f8fafc' }}>
-                          <td style={{ padding: '14px', fontWeight: '600' }}>{s.requester ? s.requester.username : "Nurse"}</td>
-                          <td style={{ padding: '14px', color: '#64748b' }}>{s.targetNurse ? s.targetNurse.username : "Colleague"}</td>
-                          <td style={{ padding: '14px', color: '#334155' }}>{s.reason}</td>
-                          <td style={{ padding: '14px' }}>
-                            <span style={{
-                              padding: '4px 10px',
-                              borderRadius: '20px',
-                              fontSize: '12px',
-                              fontWeight: '700',
-                              background: s.status === 'Approved' ? '#dcfce7' : s.status === 'Rejected' ? '#fee2e2' : '#fef3c7',
-                              color: s.status === 'Approved' ? '#15803d' : s.status === 'Rejected' ? '#b91c1c' : '#b45309'
-                            }}>
+                        <tr key={s._id}>
+                          <td style={{ color: "#64748b", fontSize: "13px" }}>
+                            {new Date(s.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          </td>
+                          <td>
+                            <strong style={{ color: "#1e293b" }}>{s.requester?.username || "Nurse"}</strong>
+                            <div style={{ fontSize: "11px", color: "#64748b" }}>{s.requester?.department}</div>
+                          </td>
+                          <td>
+                            <strong style={{ color: "#1e293b" }}>{s.targetNurse?.username || "Colleague"}</strong>
+                            <div style={{ fontSize: "11px", color: "#64748b" }}>{s.targetNurse?.department}</div>
+                          </td>
+                          <td>
+                            <span style={{ fontWeight: "600", color: "#0ea5e9" }}>{orig.shiftType || "Shift"}</span>
+                            <div style={{ fontSize: "12px", color: "#475569" }}>
+                              {origDate} ({orig.startTime} - {orig.endTime})
+                            </div>
+                          </td>
+                          <td style={{ fontSize: "13px", color: "#475569", maxWidth: "200px" }}>
+                            {s.reason}
+                          </td>
+                          <td>
+                            <span
+                              style={{
+                                fontSize: "11px",
+                                fontWeight: "700",
+                                padding: "3px 10px",
+                                borderRadius: "12px",
+                                display: "inline-block",
+                                background:
+                                  s.status === "Approved" ? "#dcfce7" :
+                                  s.status === "Rejected" ? "#fee2e2" : "#fef3c7",
+                                color:
+                                  s.status === "Approved" ? "#15803d" :
+                                  s.status === "Rejected" ? "#991b1b" : "#b45309",
+                                border:
+                                  s.status === "Approved" ? "1px solid #bbf7d0" :
+                                  s.status === "Rejected" ? "1px solid #fecaca" : "1px solid #fde68a"
+                              }}
+                            >
                               {s.status}
                             </span>
                           </td>
-                          <td style={{ padding: '14px' }}>
-                            {isMeTarget && s.status === 'Pending' && (
-                              <div style={{ display: 'flex', gap: '8px' }}>
-                                <button type="button" onClick={() => handleStatusUpdate(s._id, 'Approved')} style={{ background: '#22c55e', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '12px' }}>Approve</button>
-                                <button type="button" onClick={() => handleStatusUpdate(s._id, 'Rejected')} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '12px' }}>Reject</button>
-                              </div>
-                            )}
-                          </td>
+                          {role === "admin" && (
+                            <td style={{ textAlign: "right" }}>
+                              {isPending ? (
+                                <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                  <button
+                                    onClick={() => handleStatusUpdate(s._id, "Approved")}
+                                    style={{
+                                      background: "#10b981",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "6px",
+                                      padding: "6px 12px",
+                                      fontSize: "12px",
+                                      fontWeight: "600",
+                                      cursor: "pointer"
+                                    }}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusUpdate(s._id, "Rejected")}
+                                    style={{
+                                      background: "#ef4444",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "6px",
+                                      padding: "6px 12px",
+                                      fontSize: "12px",
+                                      fontWeight: "600",
+                                      cursor: "pointer"
+                                    }}
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                              ) : (
+                                <span style={{ fontSize: "12px", color: "#94a3b8" }}>Processed</span>
+                              )}
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
                   </tbody>
                 </table>
-              )}
-            </div>
-          </section>
-        </main>
-      </div>
-    </div>
-      
-      {/* OVERRIDE MODAL */}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* Override Rule Engine Modal */}
       {overrideModal.show && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: 'white', padding: '30px', borderRadius: '16px', width: '450px' }}>
-            <h2 style={{ margin: '0 0 15px', color: '#b91c1c' }}>⚠️ Rule Violations Detected</h2>
-            <p style={{ margin: '0 0 15px', fontSize: '14px', color: '#334155' }}>The rule engine blocked this swap for the following reasons:</p>
-            <ul style={{ color: '#991b1b', fontSize: '13px', paddingLeft: '20px', margin: '0 0 20px' }}>
-              {overrideModal.violations.map((v, i) => <li key={i}>{v}</li>)}
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(15, 23, 42, 0.6)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "white",
+            borderRadius: "16px",
+            width: "100%",
+            maxWidth: "500px",
+            padding: "24px",
+            boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)"
+          }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: "18px", color: "#b45309" }}>
+              ⚠️ Shift Swap Rule Violations Detected
+            </h3>
+            <p style={{ fontSize: "13px", color: "#475569", marginBottom: "12px" }}>
+              The scheduler detected the following clinical constraints or fatigue violations:
+            </p>
+            <ul style={{ background: "#fffbeb", border: "1px solid #fde68a", padding: "12px 28px", borderRadius: "8px", color: "#92400e", fontSize: "13px", marginBottom: "16px" }}>
+              {overrideModal.violations.map((v, i) => (
+                <li key={i}>{v}</li>
+              ))}
             </ul>
-            <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>Override Reason (Required):</label>
-            <input 
-              type="text" 
-              value={overrideModal.reason} 
-              onChange={e => setOverrideModal({...overrideModal, reason: e.target.value})} 
-              style={{ width: '100%', padding: '10px', marginBottom: '20px', borderRadius: '8px', border: '1px solid #cbd5e1' }} 
-              placeholder="Provide a mandatory reason to bypass rules..."
-            />
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={() => setOverrideModal({ show: false, swapId: null, violations: [], reason: "" })} style={{ flex: 1, padding: '10px', border: '1px solid #cbd5e1', background: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
-              <button 
-                onClick={() => handleStatusUpdate(overrideModal.swapId, 'Approved', true, overrideModal.reason)} 
-                disabled={!overrideModal.reason} 
-                style={{ flex: 1, padding: '10px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '8px', cursor: overrideModal.reason ? 'pointer' : 'not-allowed', opacity: overrideModal.reason ? 1 : 0.6 }}
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "600", color: "#334155", display: "block", marginBottom: "6px" }}>
+                OVERRIDE JUSTIFICATION REASON *
+              </label>
+              <input
+                type="text"
+                className="nurse-input"
+                placeholder="e.g. Critical ICU short-staffing override"
+                value={overrideModal.reason}
+                onChange={e => setOverrideModal(p => ({ ...p, reason: e.target.value }))}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button
+                type="button"
+                onClick={() => setOverrideModal({ show: false, swapId: null, violations: [], reason: "" })}
+                style={{
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontWeight: "600",
+                  cursor: "pointer"
+                }}
               >
-                Force Approve
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  if (!overrideModal.reason.trim()) {
+                    alert("Please provide an override reason.");
+                    return;
+                  }
+                  handleStatusUpdate(overrideModal.swapId, "Approved", true, overrideModal.reason);
+                }}
+              >
+                Confirm Override & Approve
               </button>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

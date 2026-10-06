@@ -2,9 +2,9 @@ const router = require('express').Router();
 const { Shift } = require('../model/shift');
 const auth = require('../middleware/auth');
 
-// @route   POST /api/leaves/impact
-// @desc    Compute impact of a leave request (number of overlapping shifts, department staffing)
-router.post('/impact', auth, async (req, res) => {
+// @route   POST /api/leave-impact
+// @desc    Compute impact of a leave request
+router.post('/', auth, async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
     if (!startDate || !endDate) {

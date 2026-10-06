@@ -3,19 +3,24 @@ const { ShiftSwap, swapValidationSchema } = require('../model/shiftSwap');
 const { Shift } = require('../model/shift');
 const { Notification } = require('../model/notification');
 const { User } = require('../model/user');
+const { Profile } = require('../model/profile');
 const auth = require('../middleware/auth');
 const { sendApprovalEmail, sendAdminNotificationEmail } = require('../utils/emailService');
-
+const { createInAppNotification, sendSMSNotification } = require('../services/notificationService');
 
 // @route   GET /api/swaps
-// @desc    Get shift swap requests involving the logged-in user
+// @desc    Get shift swap requests (admin: all; nurse: their own)
 router.get('/', auth, async (req, res) => {
   try {
-    const swaps = await ShiftSwap.find({
-      $or: [{ requester: req.user.id }, { targetNurse: req.user.id }]
-    })
-      .populate('requester', 'username email department')
-      .populate('targetNurse', 'username email department')
+    const isAdmin = req.user.role === 'admin' || req.user.role === 'manager' || req.user.role === 'head_nurse';
+
+    const filter = isAdmin
+      ? {}
+      : { $or: [{ requester: req.user.id }, { targetNurse: req.user.id }] };
+
+    const swaps = await ShiftSwap.find(filter)
+      .populate('requester', 'username email department employeeId')
+      .populate('targetNurse', 'username email department employeeId')
       .populate('originalShift')
       .populate('requestedShift')
       .sort({ createdAt: -1 });
@@ -41,23 +46,45 @@ router.post('/request', auth, async (req, res) => {
       reason: value.reason
     });
 
-    await newSwap.populate('requester', 'username email');
-    await newSwap.populate('targetNurse', 'username email');
+    await newSwap.populate('requester', 'username email department employeeId');
+    await newSwap.populate('targetNurse', 'username email department employeeId');
 
-    // Send notification to target nurse
-    await Notification.create({
-      user: value.targetNurseId,
-      title: 'Shift Swap Request',
-      message: `${req.user.username} has requested a shift swap with you.`,
-      type: 'swap_request'
-    });
+    const requesterName = newSwap.requester ? newSwap.requester.username : (req.user.username || 'Nurse');
 
-    // Send notification email to admin
+    // 1. Notify target nurse (In-app)
+    await createInAppNotification(
+      value.targetNurseId,
+      'Shift Swap Request',
+      `Nurse ${requesterName} has requested a shift swap with you. Reason: ${value.reason}`,
+      'swap_request'
+    );
+
+    // 2. Notify admin (In-app)
+    const admins = await User.find({ role: 'admin' });
+    for (const adm of admins) {
+      await createInAppNotification(
+        adm._id,
+        'New Shift Swap Request',
+        `New shift swap request submitted by Nurse ${requesterName}. Please review the request.`,
+        'swap_request'
+      );
+    }
+
+    // 3. Email notification to admin
     await sendAdminNotificationEmail(
-      newSwap.requester ? newSwap.requester.username : (req.user.username || 'Nurse'),
+      requesterName,
       'Shift Swap Request',
       { reason: value.reason }
     );
+
+    // 4. SMS notification to admin if configured
+    const adminPhone = process.env.ADMIN_PHONE;
+    if (adminPhone) {
+      await sendSMSNotification(
+        adminPhone,
+        `NurseSync Alert: New shift swap request from Nurse ${requesterName}. Review in the admin portal.`
+      );
+    }
 
     res.status(201).json(newSwap);
   } catch (err) {
@@ -66,7 +93,7 @@ router.post('/request', auth, async (req, res) => {
 });
 
 // @route   PUT /api/swaps/:id/status
-// @desc    Approve or Reject shift swap
+// @desc    Approve or Reject shift swap (Admin/Head Nurse)
 router.put('/:id/status', auth, async (req, res) => {
   try {
     const { status } = req.body;
@@ -74,17 +101,23 @@ router.put('/:id/status', auth, async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    const swap = await ShiftSwap.findById(req.params.id);
+    const swap = await ShiftSwap.findById(req.params.id)
+      .populate('originalShift')
+      .populate('requestedShift');
     if (!swap) return res.status(404).json({ message: 'Swap request not found' });
 
     swap.status = status;
     await swap.save();
 
-    // If approved, swap the nurse assignments on original shift
+    const originalShift = swap.originalShift ? await Shift.findById(swap.originalShift._id || swap.originalShift) : null;
+    const requestedShift = swap.requestedShift ? await Shift.findById(swap.requestedShift._id || swap.requestedShift) : null;
+
+    const shiftDateStr = originalShift?.date
+      ? new Date(originalShift.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : 'the requested shift';
+
+    // If approved, swap the nurse assignments on shifts
     if (status === 'Approved') {
-      const originalShift = await Shift.findById(swap.originalShift);
-      const requestedShift = swap.requestedShift ? await Shift.findById(swap.requestedShift) : null;
-      
       const ScheduleRuleEngine = require('../utils/ScheduleRuleEngine');
       const { AuditLog } = require('../model/auditLog');
       
@@ -122,6 +155,7 @@ router.put('/:id/status', auth, async (req, res) => {
         });
       }
 
+      // Reassign nurses
       if (originalShift) {
         originalShift.nurse = swap.targetNurse;
         originalShift.status = 'Swapped';
@@ -135,27 +169,49 @@ router.put('/:id/status', auth, async (req, res) => {
       }
     }
 
-    // Notify requester (in-app)
-    await Notification.create({
-      user: swap.requester,
-      title: `Swap Request ${status}`,
-      message: `Your shift swap request has been ${status.toLowerCase()}.`,
-      type: 'swap_request'
-    });
+    // Spec 7: Exact message: "Your shift swap request for [Date] has been approved."
+    const requesterMsg = status === 'Approved'
+      ? `Your shift swap request for ${shiftDateStr} has been approved.`
+      : `Your shift swap request for ${shiftDateStr} has been rejected.`;
 
-    // Send email to requester
+    const targetMsg = status === 'Approved'
+      ? `The shift swap for ${shiftDateStr} has been approved by the administrator. Please check your updated schedule.`
+      : `The shift swap request for ${shiftDateStr} was rejected by the administrator.`;
+
+    // 1. In-app notifications to both nurses
+    await createInAppNotification(swap.requester, `Shift Swap ${status}`, requesterMsg, 'swap_request');
+    await createInAppNotification(swap.targetNurse, `Shift Swap ${status}`, targetMsg, 'swap_request');
+
+    // 2. Email & SMS to Requester
     const requesterUser = await User.findById(swap.requester).select('username email');
+    const requesterProfile = await Profile.findOne({ user: swap.requester }).select('phone');
     if (requesterUser && requesterUser.email) {
       await sendApprovalEmail(
         requesterUser.email,
         requesterUser.username,
         'swap',
         status,
-        {
-          reason: swap.reason || '',
-          adminNote: req.body.adminNote || ''
-        }
+        { reason: swap.reason || '', adminNote: req.body.adminNote || '' }
       );
+    }
+    if (requesterProfile?.phone) {
+      await sendSMSNotification(requesterProfile.phone, requesterMsg);
+    }
+
+    // 3. Email & SMS to Target Nurse
+    const targetUser = await User.findById(swap.targetNurse).select('username email');
+    const targetProfile = await Profile.findOne({ user: swap.targetNurse }).select('phone');
+    if (targetUser && targetUser.email) {
+      await sendApprovalEmail(
+        targetUser.email,
+        targetUser.username,
+        'swap',
+        status,
+        { reason: swap.reason || '', adminNote: req.body.adminNote || '' }
+      );
+    }
+    if (targetProfile?.phone) {
+      await sendSMSNotification(targetProfile.phone, targetMsg);
     }
 
     res.json(swap);
