@@ -2573,60 +2573,7 @@ body {
   opacity: 0.5;
 }
 
-/* =========================================================
-   GLOBAL DARK THEME OVERRIDES
-========================================================= */
-body.dark-theme,
-[data-theme='dark'] body {
-  background-color: #0b1329 !important;
-  color: #f1f5f9 !important;
-}
-
-body.dark-theme .nurse-main,
-body.dark-theme .settings-main,
-body.dark-theme .attendance-main,
-body.dark-theme .nurse-layout {
-  background-color: #0b1329 !important;
-}
-
-body.dark-theme .nurse-header,
-body.dark-theme .settings-header,
-body.dark-theme .attendance-header {
-  background-color: #0f172a !important;
-  border-bottom-color: #1e293b !important;
-  color: #f8fafc !important;
-}
-
-body.dark-theme .settings-card,
-body.dark-theme .weekly-attendance-card,
-body.dark-theme .stats-card-widget,
-body.dark-theme .admin-reports,
-body.dark-theme .schedule-card {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
-}
-
-body.dark-theme h1,
-body.dark-theme h2,
-body.dark-theme h3,
-body.dark-theme strong,
-body.dark-theme .settings-page-heading h1,
-body.dark-theme .settings-card h2 {
-  color: #f8fafc !important;
-}
-
-body.dark-theme p,
-body.dark-theme label,
-body.dark-theme span {
-  color: #cbd5e1 !important;
-}
-
-body.dark-theme input {
-  background-color: #0f172a !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
-}
+/* Note: Comprehensive Dark Theme System is positioned at the end of this stylesheet for cascade priority */
 
 /* =========================================================
    PROFESSIONAL HEALTHCARE SAAS TYPOGRAPHY & SPACING SYSTEM
@@ -2711,13 +2658,13 @@ h1, h2, h3, h4, h5, h6,
 .nurse-header h1, .admin-header h1, .page-header-title {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #0f172a !important;
+  color: #0f172a;
   margin: 0 0 2px 0;
   letter-spacing: -0.02em;
 }
 
 .page-header-subtitle, .nurse-header p {
-  color: #64748b !important;
+  color: #64748b;
   font-size: 0.875rem;
   font-weight: 400;
   margin: 0;
@@ -2977,4 +2924,595 @@ h1, h2, h3, h4, h5, h6,
 .content-gap {
   gap: 24px;
 }
+
+/* ==========================================================================
+   MASTER HEALTHCARE SAAS DARK THEME & HIGH-CONTRAST ACCESSIBILITY SYSTEM
+   Guarantees 100% legibility in both Light & Dark themes across all pages
+========================================================================== */
+
+/* 1. Global Page Backgrounds & Shell */
+body.dark-theme,
+[data-theme='dark'] body,
+[data-theme='dark'] {
+  background-color: #0b1329 !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .nurse-layout,
+body.dark-theme .nurse-main,
+body.dark-theme .admin-main,
+body.dark-theme .attendance-layout,
+body.dark-theme .attendance-main,
+body.dark-theme .settings-main,
+body.dark-theme .settings-page,
+body.dark-theme .profile-page,
+body.dark-theme .profile-main,
+body.dark-theme .leave-page,
+body.dark-theme .leave-main,
+body.dark-theme .notifications-page,
+body.dark-theme .notifications-main,
+body.dark-theme .attendance-content,
+body.dark-theme .settings-content,
+body.dark-theme .profile-content,
+body.dark-theme .schedule-content {
+  background-color: #0b1329 !important;
+  background: #0b1329 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 2. Headers & Navigation */
+body.dark-theme .nurse-header,
+body.dark-theme .admin-header,
+body.dark-theme .attendance-header,
+body.dark-theme .settings-header,
+body.dark-theme .notifications-header,
+body.dark-theme .profile-header {
+  background-color: #0f1a30 !important;
+  background: #0f1a30 !important;
+  border-bottom: 1px solid #1e2e4a !important;
+  color: #f8fafc !important;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-theme .nurse-header h1,
+body.dark-theme .admin-header h1,
+body.dark-theme .page-header-title,
+body.dark-theme .welcome-text h1,
+body.dark-theme .welcome-text h3,
+body.dark-theme .attendance-welcome h3,
+body.dark-theme .notifications-welcome h3,
+body.dark-theme .profile-welcome h3,
+body.dark-theme .settings-brand h2,
+body.dark-theme .profile-title-row h1,
+body.dark-theme .attendance-page-heading h1,
+body.dark-theme .settings-page-heading h1,
+body.dark-theme .schedule-heading h1 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .page-header-subtitle,
+body.dark-theme .nurse-header p,
+body.dark-theme .admin-header p,
+body.dark-theme .attendance-header p,
+body.dark-theme .notifications-welcome p,
+body.dark-theme .attendance-page-heading p,
+body.dark-theme .settings-page-heading p,
+body.dark-theme .profile-title-row p,
+body.dark-theme .profile-designation,
+body.dark-theme .schedule-heading p {
+  color: #94a3b8 !important;
+}
+
+/* 3. All Cards, Surfaces, and Panels */
+body.dark-theme .card,
+body.dark-theme .admin-card,
+body.dark-theme .nurse-card,
+body.dark-theme .stat-card,
+body.dark-theme .stats-card-widget,
+body.dark-theme .settings-card,
+body.dark-theme .schedule-card,
+body.dark-theme .today-attendance-card,
+body.dark-theme .weekly-attendance-card,
+body.dark-theme .attendance-stat-card,
+body.dark-theme .attendance-history-card,
+body.dark-theme .leave-balance-card,
+body.dark-theme .leave-form-card,
+body.dark-theme .leave-history-card,
+body.dark-theme .notification-card,
+body.dark-theme .notifications-card,
+body.dark-theme .notification-item,
+body.dark-theme .notification-setting,
+body.dark-theme .monthly-attendance-card,
+body.dark-theme .details-card,
+body.dark-theme .skills-card,
+body.dark-theme .profile-summary-card,
+body.dark-theme .profile-info-card,
+body.dark-theme .admin-reports,
+body.dark-theme .modal-content,
+body.dark-theme .nurse-modal,
+body.dark-theme .weekly-attendance-card {
+  background-color: #14223d !important;
+  background: #14223d !important;
+  border-color: #243b61 !important;
+  border: 1px solid #243b61 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-theme .card:hover,
+body.dark-theme .stat-card:hover,
+body.dark-theme .admin-card:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 4. Headings & Typography inside Cards & Content */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme .nurse-main h1,
+body.dark-theme .nurse-main h2,
+body.dark-theme .nurse-main h3,
+body.dark-theme .admin-main h1,
+body.dark-theme .admin-main h2,
+body.dark-theme .admin-main h3,
+body.dark-theme .card h1,
+body.dark-theme .card h2,
+body.dark-theme .card h3,
+body.dark-theme .card h4,
+body.dark-theme .today-attendance-card h2,
+body.dark-theme .leave-form-card h2,
+body.dark-theme .leave-history-card h2,
+body.dark-theme .profile-basic-info h2 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme strong {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .stat-card .stat-value {
+  color: #f8fafc;
+}
+
+body.dark-theme .stat-card .stat-label {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme label,
+body.dark-theme .form-label,
+body.dark-theme .leave-form-group label {
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme p,
+body.dark-theme .nurse-main p,
+body.dark-theme .admin-main p,
+body.dark-theme .card p {
+  color: #cbd5e1;
+}
+
+body.dark-theme small {
+  color: #94a3b8 !important;
+}
+
+/* 5. Auto-Adapt Inline Dark Text Colors to Crisp Light Colors */
+body.dark-theme [style*="color: #1e293b"],
+body.dark-theme [style*="color:#1e293b"],
+body.dark-theme [style*="color: #0f172a"],
+body.dark-theme [style*="color:#0f172a"],
+body.dark-theme [style*="color: #334155"],
+body.dark-theme [style*="color:#334155"],
+body.dark-theme [style*="color: #142846"],
+body.dark-theme [style*="color:#142846"],
+body.dark-theme [style*="color: #102442"],
+body.dark-theme [style*="color:#102442"],
+body.dark-theme [style*="color: #122b4b"],
+body.dark-theme [style*="color:#122b4b"],
+body.dark-theme [style*="color: #132b4a"],
+body.dark-theme [style*="color:#132b4a"],
+body.dark-theme [style*="color: #102b4b"],
+body.dark-theme [style*="color:#102b4b"],
+body.dark-theme [style*="color: #102746"],
+body.dark-theme [style*="color:#102746"],
+body.dark-theme [style*="color: #102642"],
+body.dark-theme [style*="color:#102642"],
+body.dark-theme [style*="color: #102a48"],
+body.dark-theme [style*="color:#102a48"],
+body.dark-theme [style*="color: #183454"],
+body.dark-theme [style*="color:#183454"] {
+  color: #f8fafc !important;
+}
+
+body.dark-theme [style*="color: #475569"],
+body.dark-theme [style*="color:#475569"],
+body.dark-theme [style*="color: #64748b"],
+body.dark-theme [style*="color:#64748b"],
+body.dark-theme [style*="color: #8294aa"],
+body.dark-theme [style*="color:#8294aa"],
+body.dark-theme [style*="color: #607b9a"],
+body.dark-theme [style*="color:#607b9a"],
+body.dark-theme [style*="color: #4d6785"],
+body.dark-theme [style*="color:#4d6785"],
+body.dark-theme [style*="color: #607895"],
+body.dark-theme [style*="color:#607895"],
+body.dark-theme [style*="color: #879bb4"],
+body.dark-theme [style*="color:#879bb4"] {
+  color: #94a3b8 !important;
+}
+
+/* 6. Modal Dialogs (Both CSS Class and Inline White Styles) */
+body.dark-theme div[style*="background: white"],
+body.dark-theme div[style*="background:white"],
+body.dark-theme div[style*="background: rgb(255, 255, 255)"],
+body.dark-theme div[style*="background:rgb(255, 255, 255)"],
+body.dark-theme div[style*="background: #ffffff"],
+body.dark-theme div[style*="background:#ffffff"] {
+  background: #14223d !important;
+  background-color: #14223d !important;
+  border-color: #243b61 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme [style*="borderBottom: 1px solid #e2e8f0"],
+body.dark-theme [style*="borderBottom: 1px solid #f1f5f9"],
+body.dark-theme [style*="borderBottom: 1px solid #dce4ee"],
+body.dark-theme [style*="border-bottom: 1px solid #e2e8f0"],
+body.dark-theme [style*="border-bottom: 1px solid #f1f5f9"],
+body.dark-theme [style*="borderTop: 1px solid #e2e8f0"],
+body.dark-theme [style*="border-top: 1px solid #e2e8f0"] {
+  border-color: #243b61 !important;
+}
+
+/* 7. Sub-Containers, Filter Bars, and Policy Banners */
+body.dark-theme [style*="background: #f8fafc"],
+body.dark-theme [style*="background:#f8fafc"],
+body.dark-theme [style*="background: #f1f5f9"],
+body.dark-theme [style*="background:#f1f5f9"],
+body.dark-theme [style*="background: #eef3f8"],
+body.dark-theme [style*="background:#eef3f8"],
+body.dark-theme [style*="background: #edfafa"],
+body.dark-theme [style*="background:#edfafa"],
+body.dark-theme .leave-tabs {
+  background: #0f1a30 !important;
+  background-color: #0f1a30 !important;
+  border-color: #243b61 !important;
+}
+
+body.dark-theme .leave-tab {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .leave-tab.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+}
+
+body.dark-theme button[style*="background: white"],
+body.dark-theme button[style*="background:white"],
+body.dark-theme button[style*="background: #ffffff"],
+body.dark-theme button[style*="background:#ffffff"] {
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* 8. Tables, Rows, Borders, and Hovers */
+body.dark-theme .table-responsive {
+  background-color: #14223d !important;
+  border-color: #243b61 !important;
+}
+
+body.dark-theme .nurse-table th,
+body.dark-theme table.table th,
+body.dark-theme .attendance-table th,
+body.dark-theme .fairness-table th {
+  background-color: #0f1a30 !important;
+  background: #0f1a30 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #243b61 !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .nurse-table td,
+body.dark-theme table.table td,
+body.dark-theme .attendance-table td,
+body.dark-theme .fairness-table td {
+  color: #e2e8f0 !important;
+  border-bottom: 1px solid #1a2c4c !important;
+  background: transparent !important;
+}
+
+body.dark-theme .nurse-table tbody tr:hover,
+body.dark-theme table.table tbody tr:hover,
+body.dark-theme .attendance-table tbody tr:hover {
+  background-color: #1a2c4c !important;
+}
+
+body.dark-theme tr[style*="background: #f0f9ff"],
+body.dark-theme tr[style*="background:#f0f9ff"] {
+  background-color: #13284f !important;
+  background: #13284f !important;
+}
+
+/* 9. Forms, Inputs, Dropdowns, Date Pickers */
+body.dark-theme .form-control,
+body.dark-theme .form-select,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="email"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="date"],
+body.dark-theme select,
+body.dark-theme textarea,
+body.dark-theme .nurse-input {
+  background-color: #0c1629 !important;
+  background: #0c1629 !important;
+  color: #f8fafc !important;
+  border: 1px solid #2a436e !important;
+  border-radius: 10px;
+}
+
+body.dark-theme .form-control:focus,
+body.dark-theme input:focus,
+body.dark-theme select:focus,
+body.dark-theme textarea:focus,
+body.dark-theme .nurse-input:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+  outline: none;
+}
+
+body.dark-theme select option {
+  background-color: #0c1629 !important;
+  color: #f8fafc !important;
+}
+
+/* 10. Secondary & Outline Buttons */
+body.dark-theme .btn-light,
+body.dark-theme .btn-outline-secondary,
+body.dark-theme button[style*="background: #f1f5f9"],
+body.dark-theme button[style*="background:#f1f5f9"] {
+  background-color: #182744 !important;
+  background: #182744 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #2a436e !important;
+}
+
+body.dark-theme .btn-light:hover,
+body.dark-theme .btn-outline-secondary:hover,
+body.dark-theme button[style*="background: #f1f5f9"]:hover {
+  background-color: #243b61 !important;
+  background: #243b61 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* 11. High-Contrast Glowing Badges & Indicators */
+/* Morning Shift Badge */
+body.dark-theme .badge-morning,
+body.dark-theme span[style*="background: #eff6ff"],
+body.dark-theme span[style*="background:#eff6ff"] {
+  background-color: rgba(30, 64, 175, 0.35) !important;
+  background: rgba(30, 64, 175, 0.35) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(147, 197, 253, 0.45) !important;
+}
+
+/* Evening Shift Badge */
+body.dark-theme .badge-evening,
+body.dark-theme span[style*="background: #fef3c7"],
+body.dark-theme span[style*="background:#fef3c7"] {
+  background-color: rgba(180, 83, 9, 0.35) !important;
+  background: rgba(180, 83, 9, 0.35) !important;
+  color: #fde68a !important;
+  border: 1px solid rgba(253, 230, 138, 0.45) !important;
+}
+
+/* Night Shift Badge */
+body.dark-theme .badge-night,
+body.dark-theme span[style*="background: #f5f3ff"],
+body.dark-theme span[style*="background:#f5f3ff"],
+body.dark-theme span[style*="background: #ede9fe"],
+body.dark-theme span[style*="background:#ede9fe"] {
+  background-color: rgba(109, 40, 217, 0.35) !important;
+  background: rgba(109, 40, 217, 0.35) !important;
+  color: #ddd6fe !important;
+  border: 1px solid rgba(221, 214, 254, 0.45) !important;
+}
+
+/* Active / Approved / Completed Badge */
+body.dark-theme .badge-active,
+body.dark-theme .badge-approved,
+body.dark-theme span[style*="background: #ecfdf5"],
+body.dark-theme span[style*="background:#ecfdf5"],
+body.dark-theme span[style*="background: #f0fdf4"],
+body.dark-theme span[style*="background:#f0fdf4"] {
+  background-color: rgba(6, 95, 70, 0.35) !important;
+  background: rgba(6, 95, 70, 0.35) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(110, 231, 183, 0.45) !important;
+}
+
+/* Pending Badge */
+body.dark-theme .badge-pending,
+body.dark-theme span[style*="background: #fffbeb"],
+body.dark-theme span[style*="background:#fffbeb"] {
+  background-color: rgba(180, 83, 9, 0.35) !important;
+  background: rgba(180, 83, 9, 0.35) !important;
+  color: #fde68a !important;
+  border: 1px solid rgba(253, 230, 138, 0.45) !important;
+}
+
+/* Danger / Rejected / Cancelled Badge */
+body.dark-theme .badge-rejected,
+body.dark-theme .badge-inactive,
+body.dark-theme span[style*="background: #fef2f2"],
+body.dark-theme span[style*="background:#fef2f2"],
+body.dark-theme span[style*="background: #fee2e2"],
+body.dark-theme span[style*="background:#fee2e2"] {
+  background-color: rgba(153, 27, 27, 0.35) !important;
+  background: rgba(153, 27, 27, 0.35) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(252, 165, 165, 0.45) !important;
+}
+
+/* 12. LiveClock Badge */
+body.dark-theme .live-clock-badge {
+  background-color: #14223d !important;
+  background: #14223d !important;
+  border-color: #243b61 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .live-clock-badge .live-clock-date {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .live-clock-badge .live-clock-time,
+body.dark-theme .live-clock-badge.admin-header-clock .live-clock-time {
+  color: #38bdf8 !important;
+  font-weight: 800 !important;
+}
+
+/* 13. Appearance Buttons in Settings */
+body.dark-theme .appearance-button {
+  background: #14223d !important;
+  background-color: #14223d !important;
+  border: 1px solid #243b61 !important;
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .appearance-button:hover {
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+body.dark-theme .appearance-button.selected {
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  border: 1px solid #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+body.dark-theme .appearance-button span {
+  color: inherit !important;
+}
+
+/* 14. Notifications List Items */
+body.dark-theme .notification-item {
+  background: #14223d !important;
+  border-color: #243b61 !important;
+}
+
+body.dark-theme .notification-item.unread {
+  background: #182e52 !important;
+  border-left: 3px solid #38bdf8 !important;
+}
+
+body.dark-theme .notification-item h4 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .notification-item p {
+  color: #94a3b8 !important;
+}
+
+/* 15. Sidebar Theme Toggle Button */
+.sidebar-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-theme-toggle .theme-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-theme-toggle .theme-toggle-indicator {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #38bdf8;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 16. Footers & Floating Help Buttons */
+body.dark-theme .nurse-footer,
+body.dark-theme .settings-footer,
+body.dark-theme .profile-footer,
+body.dark-theme .attendance-footer {
+  background-color: #0f1a30 !important;
+  background: #0f1a30 !important;
+  border-top-color: #1e2e4a !important;
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .settings-help-button,
+body.dark-theme .profile-help-button,
+body.dark-theme .attendance-help-button {
+  background: #14223d !important;
+  background-color: #14223d !important;
+  color: #f8fafc !important;
+  border: 1px solid #243b61 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 17. Profile & Attendance Details */
+body.dark-theme .detail-text span {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .detail-text strong {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .skill {
+  background: rgba(14, 165, 233, 0.2) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+body.dark-theme .profile-tags span {
+  background: rgba(14, 165, 233, 0.2) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+body.dark-theme .history-header {
+  color: #94a3b8 !important;
+  border-bottom-color: #243b61 !important;
+}
+
+body.dark-theme .history-row {
+  color: #e2e8f0 !important;
+  border-bottom-color: #1a2c4c !important;
+}
+
+
 

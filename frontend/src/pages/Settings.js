@@ -10,6 +10,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { getInitials } from "../utils/helpers";
+import { getSavedTheme, applyTheme as applyGlobalTheme } from "../utils/theme";
 import "../styles/Settings.css";
 
 function Settings() {
@@ -19,36 +20,21 @@ function Settings() {
   const nurseName = user ? user.username : "Nurse";
 
   // Appearance / Theme
-  const [appearance, setAppearance] = useState(() => {
-    return localStorage.getItem("nursesync_theme") || "Light";
-  });
+  const [appearance, setAppearance] = useState(getSavedTheme);
 
   const applyTheme = (themeMode) => {
     setAppearance(themeMode);
-    localStorage.setItem("nursesync_theme", themeMode);
-    
-    const root = document.documentElement;
-    if (themeMode === "Dark") {
-      document.body.classList.add("dark-theme");
-      root.setAttribute("data-theme", "dark");
-    } else if (themeMode === "Light") {
-      document.body.classList.remove("dark-theme");
-      root.setAttribute("data-theme", "light");
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
-        document.body.classList.add("dark-theme");
-        root.setAttribute("data-theme", "dark");
-      } else {
-        document.body.classList.remove("dark-theme");
-        root.setAttribute("data-theme", "light");
-      }
-    }
+    applyGlobalTheme(themeMode);
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem("nursesync_theme") || "Light";
-    applyTheme(saved);
+    const handleThemeChange = (e) => {
+      if (e.detail && e.detail.themeMode) {
+        setAppearance(e.detail.themeMode);
+      }
+    };
+    window.addEventListener("nursesync-theme-changed", handleThemeChange);
+    return () => window.removeEventListener("nursesync-theme-changed", handleThemeChange);
   }, []);
 
   // Notification settings

@@ -38,16 +38,26 @@
 .fairness-table td {
   text-align: left;
   padding: 12px 16px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .fairness-table th {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .fairness-table td {
-  color: #e2e8f0;
+  color: #1e293b;
+}
+
+body.dark-theme .fairness-table th {
+  color: #94a3b8 !important;
+  border-bottom-color: #243b61 !important;
+}
+
+body.dark-theme .fairness-table td {
+  color: #e2e8f0 !important;
+  border-bottom-color: #1a2c4c !important;
 }

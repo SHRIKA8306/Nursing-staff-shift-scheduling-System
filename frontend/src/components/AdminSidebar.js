@@ -1,11 +1,30 @@
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getSavedTheme, applyTheme } from "../utils/theme";
 import "../App.css";
 
 function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [currentTheme, setCurrentTheme] = useState(getSavedTheme);
+
+  useEffect(() => {
+    const handleThemeChange = (e) => {
+      if (e.detail?.themeMode) {
+        setCurrentTheme(e.detail.themeMode);
+      }
+    };
+    window.addEventListener("nursesync-theme-changed", handleThemeChange);
+    return () => window.removeEventListener("nursesync-theme-changed", handleThemeChange);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = currentTheme === "Dark" ? "Light" : "Dark";
+    setCurrentTheme(nextTheme);
+    applyTheme(nextTheme);
+  };
 
   const menuItems = [
     {
@@ -179,6 +198,18 @@ function AdminSidebar() {
 
       {/* Bottom User Info & Logout */}
       <div className="sidebar-bottom">
+        <button
+          type="button"
+          className="sidebar-theme-toggle"
+          onClick={toggleTheme}
+          title="Toggle Light / Dark Theme"
+        >
+          <span className="theme-toggle-label">
+            {currentTheme === "Dark" ? "🌙 Dark Mode" : "🌞 Light Mode"}
+          </span>
+          <span className="theme-toggle-indicator">Switch</span>
+        </button>
+
         <button
           type="button"
           className="logout-button"
