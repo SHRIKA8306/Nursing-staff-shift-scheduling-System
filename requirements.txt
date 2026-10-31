@@ -1,0 +1,93 @@
+================================================================================
+                    NURSE SHIFT SCHEDULING SYSTEM
+                       PROJECT REQUIREMENTS & SETUP
+================================================================================
+
+1. SYSTEM PREREQUISITES
+--------------------------------------------------------------------------------
+- Node.js : v18.0.0 or higher (v20+ recommended)
+  Download: https://nodejs.org/
+- npm     : v9.0.0 or higher (comes bundled with Node.js)
+- MongoDB : v6.0 or higher (Local Community Server OR MongoDB Atlas cloud URI)
+  Download: https://www.mongodb.com/try/download/community
+
+
+2. STEP-BY-STEP INSTALLATION COMMANDS
+--------------------------------------------------------------------------------
+
+Step 1: Install Backend Dependencies
+-----------------------------------
+Open a terminal in the project root and run:
+    cd Backend
+    npm install
+
+Backend Installed Packages:
+    npm install express mongoose bcryptjs jsonwebtoken dotenv cors nodemailer passport passport-google-oauth20 express-session joi
+    npm install --save-dev nodemon
+
+Step 2: Install Frontend Dependencies
+------------------------------------
+Open a separate terminal in the project root and run:
+    cd frontend
+    npm install
+
+Frontend Installed Packages:
+    npm install react react-dom react-router-dom lucide-react web-vitals
+    npm install --save-dev tailwindcss postcss autoprefixer react-scripts
+
+
+3. ONE-LINE QUICK INSTALL (FROM ROOT)
+--------------------------------------------------------------------------------
+If you want to install everything from the project root directory:
+
+    npm install --prefix Backend && npm install --prefix frontend
+
+
+4. CONFIGURATION (.env)
+--------------------------------------------------------------------------------
+Ensure the file `Backend/.env` contains the required environment variables:
+
+    PORT=5000
+    MONGO_URI=mongodb://127.0.0.1:27017/nurse_shift_scheduling
+    JWT_SECRET=your_jwt_secret_key
+    SESSION_SECRET=your_session_secret_key
+
+
+5. DATABASE SEEDING (OPTIONAL / FIRST TIME SETUP)
+--------------------------------------------------------------------------------
+To seed default admin and nurse users into MongoDB:
+
+    cd Backend
+    node seeder.js
+
+
+6. COMMANDS TO RUN THE PROJECT
+--------------------------------------------------------------------------------
+
+Option A: Run Backend and Frontend in Separate Terminals
+--------------------------------------------------------
+Terminal 1 (Backend):
+    cd Backend
+    npm run dev
+    (Backend server will run at http://localhost:5000)
+
+Terminal 2 (Frontend):
+    cd frontend
+    npm start
+    (Frontend React app will open at http://localhost:3000)
+
+Option B: Start from Root
+-------------------------
+    npm start
+    (This executes: npm start --prefix frontend)
+
+
+7. PRODUCTION BUILD COMMANDS
+--------------------------------------------------------------------------------
+To create an optimized production build of the frontend:
+
+    cd frontend
+    npm run build
+    (or from root: npm run build)
+
+================================================================================
