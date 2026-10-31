@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 module.exports = async () => {
-    const url = process.env.DB || 'mongodb://127.0.0.1:27017/nurse_shift_db';
+    const url = process.env.MONGO_URI || process.env.DB || 'mongodb://127.0.0.1:27017/nurse_shift_db';
 
     // Catch runtime mongoose connection errors to prevent server crash
     mongoose.connection.on('error', (err) => {

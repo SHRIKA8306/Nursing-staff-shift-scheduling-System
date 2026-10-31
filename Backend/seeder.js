@@ -379,7 +379,7 @@ const seedDatabase = async () => {
 if (require.main === module) {
   require('dotenv').config();
   const mongoose = require('mongoose');
-  const dbUrl = process.env.DB || 'mongodb://127.0.0.1:27017/nurse_shift_db';
+  const dbUrl = process.env.MONGO_URI || process.env.DB || 'mongodb://127.0.0.1:27017/nurse_shift_db';
   mongoose.connect(dbUrl)
     .then(async () => {
       console.log('Connected to MongoDB for seeding...');
