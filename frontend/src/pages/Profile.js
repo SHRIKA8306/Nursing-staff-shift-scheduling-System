@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Menu,
   Bell,
   UserRound,
   CreditCard,
@@ -21,6 +21,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Profile.css";
 
 function Profile() {
+  const navigate = useNavigate();
   const { user, token, role, unreadCount } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -117,52 +118,53 @@ function Profile() {
   const nurseDept = user ? user.department || "General Ward" : "ICU";
 
   return (
-    <div className="profile-page">
+    <div className="nurse-layout">
       {/* SIDEBAR */}
       {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       {/* MAIN AREA */}
-      <div className="profile-main">
+      <main className="nurse-main">
         {/* HEADER */}
-        <header className="profile-header">
-          <div className="profile-header-left">
-            <button className="profile-menu-button">
-              <Menu size={25} />
-            </button>
-            <div className="profile-welcome">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>My Profile</h1>
+              <p>Manage your personal and professional details · NurseSync AI</p>
             </div>
           </div>
 
-          <div className="profile-header-right">
-            <button className="profile-notification">
-              <Bell size={21} />
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              type="button"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={20} />
               <span>{unreadCount || 0}</span>
             </button>
-            <div className="profile-header-avatar">
-              {nurseName.substring(0, 2).toUpperCase()}
-            </div>
+            {role !== 'admin' && (
+              <div className="header-avatar" onClick={() => navigate("/profile")}>
+                {nurseName.substring(0, 2).toUpperCase()}
+              </div>
+            )}
           </div>
         </header>
 
         {/* PAGE CONTENT */}
-        <main className="profile-content">
-          {/* PAGE TITLE & EDIT BUTTON */}
-          <div className="profile-title-row">
-            <div>
-              <h1>My Profile</h1>
-              <p>Manage your personal and professional details</p>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="profile-content" style={{ padding: 0 }}>
+            {/* EDIT BUTTON ROW */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
+              <button 
+                className="edit-profile-button"
+                onClick={() => setIsEditing(!isEditing)}
+              >
+                <Pencil size={18} />
+                <span>{isEditing ? "Cancel Editing" : "Edit Profile"}</span>
+              </button>
             </div>
-
-            <button 
-              className="edit-profile-button"
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              <Pencil size={18} />
-              <span>{isEditing ? "Cancel Editing" : "Edit Profile"}</span>
-            </button>
-          </div>
 
           {saveSuccess && (
             <div style={{ padding: '12px 16px', background: '#dcfce7', color: '#15803d', borderRadius: '12px', marginBottom: '20px' }}>
@@ -386,17 +388,10 @@ function Profile() {
               <span className="skill">Neurology</span>
             </div>
           </section>
-        </main>
+        </div>
+        </div>
 
-        {/* FOOTER */}
-        <footer className="profile-footer">
-          <span>© 2026 NurseSync AI · Nurse Portal</span>
-          <span className="profile-system-status">
-            <span className="profile-status-dot"></span>
-            System Online
-          </span>
-        </footer>
-      </div>
+      </main>
     </div>
   );
 }

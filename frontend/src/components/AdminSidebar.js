@@ -1,30 +1,11 @@
-import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getSavedTheme, applyTheme } from "../utils/theme";
 import "../App.css";
 
 function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const [currentTheme, setCurrentTheme] = useState(getSavedTheme);
-
-  useEffect(() => {
-    const handleThemeChange = (e) => {
-      if (e.detail?.themeMode) {
-        setCurrentTheme(e.detail.themeMode);
-      }
-    };
-    window.addEventListener("nursesync-theme-changed", handleThemeChange);
-    return () => window.removeEventListener("nursesync-theme-changed", handleThemeChange);
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = currentTheme === "Dark" ? "Light" : "Dark";
-    setCurrentTheme(nextTheme);
-    applyTheme(nextTheme);
-  };
 
   const menuItems = [
     {
@@ -114,27 +95,6 @@ function AdminSidebar() {
       path: "/notifications",
     },
     {
-      name: "Reports & Analytics",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
-      ),
-      path: "/admin-reports",
-    },
-    {
-      name: "Audit Logs",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-      ),
-      path: "/audit-logs",
-    },
-    {
       name: "Settings",
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -154,12 +114,10 @@ function AdminSidebar() {
     <aside className="nurse-sidebar">
       {/* Brand Logo */}
       <div className="sidebar-brand">
-        <div className="sidebar-logo" style={{ background: 'linear-gradient(135deg, #0ea5e9, #14b8a6)' }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
+        <div className="sidebar-logo" style={{ background: 'transparent', boxShadow: 'none', padding: 0, overflow: 'hidden' }}>
+          <img src="/logo.png" alt="NurseSync AI" style={{ width: '44px', height: '44px', objectFit: 'contain', display: 'block' }} />
         </div>
-        <div>
+        <div className="sidebar-brand-text">
           <h2>NurseSync AI</h2>
           <p>Admin Control Portal</p>
         </div>
@@ -196,32 +154,8 @@ function AdminSidebar() {
         })}
       </nav>
 
-      {/* Bottom User Info & Logout */}
+      {/* Bottom User Info & Logout Button */}
       <div className="sidebar-bottom">
-        <button
-          type="button"
-          className="sidebar-theme-toggle"
-          onClick={toggleTheme}
-          title="Toggle Light / Dark Theme"
-        >
-          <span className="theme-toggle-label">
-            {currentTheme === "Dark" ? "🌙 Dark Mode" : "🌞 Light Mode"}
-          </span>
-          <span className="theme-toggle-indicator">Switch</span>
-        </button>
-
-        <button
-          type="button"
-          className="logout-button"
-          onClick={() => { logout(); navigate("/"); }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-          Logout
-        </button>
         <div className="sidebar-user">
           <div className="user-avatar" style={{ background: 'linear-gradient(135deg, #0ea5e9, #14b8a6)', color: 'white' }}>
             {initials}
@@ -231,6 +165,15 @@ function AdminSidebar() {
             <span>Admin · System Controller</span>
           </div>
         </div>
+
+        <button
+          type="button"
+          className="logout-button"
+          onClick={() => { logout(); navigate("/"); }}
+          title="Logout"
+        >
+          Logout
+        </button>
       </div>
     </aside>
   );

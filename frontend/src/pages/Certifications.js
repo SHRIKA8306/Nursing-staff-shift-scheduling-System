@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Bell, Menu, CircleHelp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Bell, CircleHelp } from "lucide-react";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
@@ -8,6 +9,7 @@ import "../styles/Certifications.css";
 import "../styles/Attendance.css";
 
 function Certifications() {
+  const navigate = useNavigate();
   const { user, token, role, unreadCount } = useAuth();
   const [certs, setCerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,33 +36,32 @@ function Certifications() {
   if (role !== 'admin') return <p style={{ color: "white", padding: 40 }}>Access denied.</p>;
 
   return (
-    <div className="attendance-layout">
+    <div className="nurse-layout">
       <AdminSidebar />
 
-      <main className="attendance-main">
-        <header className="attendance-header">
-          <div className="attendance-header-left">
-            <button className="attendance-menu-button" type="button">
-              <Menu size={25} />
-            </button>
-            <div className="attendance-welcome">
-              <h3>Welcome back, {adminName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+      <main className="nurse-main">
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>Certifications</h1>
+              <p>View and manage nurse certifications · NurseSync AI</p>
             </div>
           </div>
-          <div className="attendance-header-right">
-            <button className="attendance-notification" type="button">
-              <Bell size={21} /><span>{unreadCount || 0}</span>
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              type="button"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={18} /><span>{unreadCount || 0}</span>
             </button>
-            <div className="attendance-avatar">{getInitials(adminName)}</div>
           </div>
         </header>
 
-        <div className="attendance-content">
-          <div className="attendance-page-heading">
-            <h1>Certifications</h1>
-            <p>View and manage nurse certifications</p>
-          </div>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="attendance-content" style={{ padding: 0 }}>
 
           <section className="weekly-attendance-card">
             <div className="weekly-attendance-header">
@@ -103,11 +104,8 @@ function Certifications() {
             </div>
           </section>
         </div>
+        </div>
 
-        <footer className="attendance-footer">
-          <span>© 2026 NurseSync AI · Admin Portal</span>
-          <span className="attendance-system-status"><span></span>System Online</span>
-        </footer>
       </main>
       <button className="attendance-help-button" type="button"><CircleHelp size={23} /></button>
     </div>

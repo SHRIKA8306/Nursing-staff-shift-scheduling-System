@@ -1,19 +1,29 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
 import AdminSidebar from "../components/AdminSidebar";
 import NurseSidebar from "../components/NurseSidebar";
 import {
   Bell,
-  Menu,
   Eye,
   EyeOff,
+  Mail,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  Monitor,
+  Sun,
+  Moon,
+  LogOut
 } from "lucide-react";
 import { getInitials } from "../utils/helpers";
 import { getSavedTheme, applyTheme as applyGlobalTheme } from "../utils/theme";
 import "../styles/Settings.css";
 
 function Settings() {
+  const navigate = useNavigate();
   const { user, logout, unreadCount, role, token } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -132,57 +142,43 @@ function Settings() {
       )}
 
       {/* MAIN AREA */}
-      <main className="settings-main">
+      <main className="nurse-main">
 
         {/* HEADER */}
-        <header className="settings-header">
-          <div className="settings-header-left">
-            <button
-              className="settings-menu-toggle"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu size={25} />
-            </button>
-
-            <div className="settings-welcome">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>Settings</h1>
+              <p>Manage your account preferences, themes, and configuration · NurseSync AI</p>
             </div>
           </div>
 
-          <div className="settings-header-right">
-            <button className="settings-header-notification">
-              <Bell size={21} />
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              type="button"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={20} />
               <span>{unreadCount || 0}</span>
             </button>
 
-            <div className="settings-header-avatar">
-              {getInitials(nurseName)}
-            </div>
+            {role !== 'admin' && (
+              <div className="header-avatar" onClick={() => navigate("/profile")}>
+                {getInitials(nurseName)}
+              </div>
+            )}
           </div>
         </header>
-
 
         {/* =====================================
             PAGE CONTENT
         ===================================== */}
 
-        <div className="settings-content">
-
-          {/* Page Heading */}
-
-          <div className="settings-page-heading">
-
-            <h1>
-              Settings
-            </h1>
-
-            <p>
-              Manage your account preferences
-            </p>
-
-          </div>
-
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="settings-content" style={{ padding: 0 }}>
 
           {/* =====================================
               NOTIFICATION SETTINGS
@@ -229,7 +225,6 @@ function Settings() {
 
               </div>
 
-
               {/* Leave Request Updates */}
 
               <div className="notification-setting">
@@ -262,7 +257,6 @@ function Settings() {
                 </button>
 
               </div>
-
 
               {/* Emergency Alerts */}
 
@@ -297,7 +291,6 @@ function Settings() {
 
               </div>
 
-
               {/* Shift Swap Requests */}
 
               <div className="notification-setting">
@@ -330,7 +323,6 @@ function Settings() {
                 </button>
 
               </div>
-
 
               {/* System Announcements */}
 
@@ -372,13 +364,18 @@ function Settings() {
           {/* =====================================
               EMAIL NOTIFICATIONS & SMTP DIAGNOSTICS
           ===================================== */}
-          <section className="settings-card" style={{ borderLeft: "4px solid #0284c7" }}>
+          <section className="settings-card" style={{ borderLeft: "4px solid #0284c7", borderRadius: "12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <div>
-                <h2 style={{ margin: 0, fontSize: "1.2rem", color: "#0f172a" }}>📧 Email Notification & SMTP Diagnostics</h2>
-                <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.875rem" }}>
-                  Verify that approval/rejection emails and leave notifications reach real inboxes.
-                </p>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#f0f9ff", border: "1px solid #bae6fd", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Mail size={18} color="#0284c7" />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "#0f172a" }}>Email Notification & SMTP Diagnostics</h2>
+                  <p style={{ margin: "3px 0 0", color: "#64748b", fontSize: "0.85rem" }}>
+                    Verify that approval/rejection emails and leave notifications reach real inboxes.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -387,7 +384,7 @@ function Settings() {
                 <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "#334155", marginBottom: "6px" }}>
                   Send Test Email To:
                 </label>
-                <div style={{ display: "flex", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "10px", alignItems: "stretch" }}>
                   <input
                     type="email"
                     required
@@ -396,31 +393,43 @@ function Settings() {
                     placeholder="Enter email (e.g. shrikasenthilkumar8@gmail.com)"
                     style={{
                       flex: 1,
-                      padding: "10px 14px",
-                      borderRadius: "10px",
+                      height: "44px",
+                      padding: "0 14px",
+                      borderRadius: "8px",
                       border: "1px solid #cbd5e1",
-                      fontSize: "0.9rem"
+                      fontSize: "0.9rem",
+                      boxSizing: "border-box"
                     }}
                   />
                   <button
                     type="submit"
                     disabled={testEmailLoading}
                     style={{
+                      height: "44px",
                       background: "#0284c7",
                       color: "white",
                       border: "none",
-                      borderRadius: "10px",
-                      padding: "10px 20px",
+                      borderRadius: "8px",
+                      padding: "0 20px",
                       fontWeight: "600",
                       fontSize: "0.9rem",
                       cursor: testEmailLoading ? "not-allowed" : "pointer",
-                      display: "flex",
+                      display: "inline-flex",
                       alignItems: "center",
+                      justifyContent: "center",
                       gap: "8px",
-                      opacity: testEmailLoading ? 0.7 : 1
+                      opacity: testEmailLoading ? 0.7 : 1,
+                      boxSizing: "border-box"
                     }}
                   >
-                    {testEmailLoading ? "Sending..." : "Send Test Email 🚀"}
+                    {testEmailLoading ? (
+                      <span>Sending...</span>
+                    ) : (
+                      <>
+                        <Send size={15} />
+                        <span>Send Test Email</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -428,21 +437,34 @@ function Settings() {
               {testEmailResult && (
                 <div style={{
                   padding: "14px 18px",
-                  borderRadius: "10px",
+                  borderRadius: "8px",
                   marginTop: "16px",
                   background: testEmailResult.success ? "#ecfdf5" : "#fef2f2",
                   border: `1px solid ${testEmailResult.success ? "#a7f3d0" : "#fecaca"}`,
                   color: testEmailResult.success ? "#065f46" : "#991b1b"
                 }}>
-                  <div style={{ fontWeight: "700", fontSize: "0.95rem", marginBottom: "4px" }}>
-                    {testEmailResult.success ? "✅ Success!" : "❌ Delivery Issue"}
+                  <div style={{ fontWeight: "700", fontSize: "0.95rem", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    {testEmailResult.success ? (
+                      <>
+                        <CheckCircle2 size={17} />
+                        <span>Success!</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle size={17} />
+                        <span>Delivery Issue</span>
+                      </>
+                    )}
                   </div>
                   <div style={{ fontSize: "0.875rem", lineHeight: "1.5" }}>
                     {testEmailResult.message}
                   </div>
                   {testEmailResult.hint && (
-                    <div style={{ marginTop: "8px", fontSize: "0.825rem", color: "#b91c1c", background: "white", padding: "8px 12px", borderRadius: "6px", border: "1px solid #fecaca" }}>
-                      💡 <strong>Required Action:</strong> {testEmailResult.hint}
+                    <div style={{ marginTop: "8px", fontSize: "0.825rem", color: "#b91c1c", background: "white", padding: "8px 12px", borderRadius: "6px", border: "1px solid #fecaca", display: "flex", alignItems: "flex-start", gap: "6px" }}>
+                      <Info size={15} style={{ flexShrink: 0, marginTop: "2px" }} />
+                      <div>
+                        <strong>Required Action:</strong> {testEmailResult.hint}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -506,7 +528,6 @@ function Settings() {
 
               </div>
 
-
               {/* New Password */}
 
               <div className="password-group">
@@ -551,7 +572,6 @@ function Settings() {
                 </div>
 
               </div>
-
 
               {/* Confirm Password */}
 
@@ -598,7 +618,6 @@ function Settings() {
 
               </div>
 
-
               <button
                 type="submit"
                 className="update-password-button"
@@ -609,7 +628,6 @@ function Settings() {
             </form>
 
           </section>
-
 
           {/* =====================================
               APPEARANCE
@@ -632,10 +650,9 @@ function Settings() {
                 }`}
                 onClick={() => applyTheme("System")}
               >
-                💻
+                <Monitor size={17} />
                 <span>System</span>
               </button>
-
 
               <button
                 type="button"
@@ -646,10 +663,9 @@ function Settings() {
                 }`}
                 onClick={() => applyTheme("Light")}
               >
-                🌞
+                <Sun size={17} />
                 <span>Light</span>
               </button>
-
 
               <button
                 type="button"
@@ -660,7 +676,7 @@ function Settings() {
                 }`}
                 onClick={() => applyTheme("Dark")}
               >
-                🌙
+                <Moon size={17} />
                 <span>Dark</span>
               </button>
 
@@ -668,11 +684,10 @@ function Settings() {
 
           </section>
 
-
           {/* =====================================
               ACCOUNT & SESSION (LOGOUT)
           ===================================== */}
-          <section className="settings-card logout-card" style={{ borderLeft: '4px solid #ef4444', marginTop: '32px' }}>
+          <section className="settings-card logout-card" style={{ borderLeft: '4px solid #ef4444', borderRadius: '12px', marginTop: '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <h2 style={{ color: '#ef4444', margin: 0, fontSize: '18px', fontWeight: '800' }}>
@@ -686,19 +701,19 @@ function Settings() {
                 type="button"
                 className="settings-logout-btn"
                 style={{
-                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  background: '#dc2626',
                   color: 'white',
                   border: 'none',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  fontWeight: '700',
-                  fontSize: '15px',
+                  padding: '10px 20px',
+                  borderRadius: '10px',
+                  fontWeight: '600',
+                  fontSize: '14px',
                   cursor: 'pointer',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 14px rgba(239, 68, 68, 0.3)',
-                  transition: 'transform 0.2s ease'
+                  boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
+                  transition: 'background-color 0.15s ease, transform 0.15s ease'
                 }}
                 onClick={() => {
                   if (window.confirm("Are you sure you want to log out of NurseSync AI?")) {
@@ -707,31 +722,18 @@ function Settings() {
                   }
                 }}
               >
-                <span>🔒</span> Sign Out of NurseSync AI
+                <LogOut size={16} />
+                <span>Sign Out of NurseSync AI</span>
               </button>
             </div>
           </section>
 
         </div>
-
+        </div>
 
         {/* =====================================
             FOOTER
         ===================================== */}
-
-        <footer className="settings-footer">
-
-          <span>
-            © 2026 NurseSync AI · Nurse Portal
-          </span>
-
-          <span className="settings-system-status">
-            <span className="settings-status-dot"></span>
-            System Online
-          </span>
-
-        </footer>
-
 
         {/* Help */}
 

@@ -3,6 +3,21 @@ import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import {
+  Bell,
+  Users,
+  Stethoscope,
+  Clock,
+  ClipboardList,
+  ShieldAlert,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  Calendar,
+  Moon,
+  TrendingUp,
+  ArrowRight
+} from "lucide-react";
 import "../App.css";
 
 function AdminDashboard() {
@@ -108,6 +123,19 @@ function AdminDashboard() {
     }
   };
 
+  const renderInsightIcon = (type, iconStr) => {
+    if (type?.includes("shortage") || type?.includes("alert") || iconStr === "🚨") {
+      return <AlertTriangle size={16} color="#e11d48" />;
+    }
+    if (type?.includes("leave") || iconStr === "📅") {
+      return <Calendar size={16} color="#f59e0b" />;
+    }
+    if (type?.includes("night") || type?.includes("workload") || iconStr === "🌙") {
+      return <Moon size={16} color="#8b5cf6" />;
+    }
+    return <TrendingUp size={16} color="#0284c7" />;
+  };
+
   return (
     <div className="nurse-layout">
       <AdminSidebar />
@@ -128,40 +156,46 @@ function AdminDashboard() {
               onClick={() => navigate("/notifications")}
               title="Notifications"
             >
-              🔔 <span>{unreadCount || 0}</span>
+              <Bell size={18} /> <span>{unreadCount || 0}</span>
             </button>
           </div>
         </header>
 
-        <div style={{ padding: "0 32px 32px" }}>
+        <div style={{ padding: "24px 32px 32px" }}>
 
           {/* TOP STATISTICS (5 Metrics from Spec) */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px", marginBottom: "28px" }}>
             {/* Total Nurses */}
-            <div className="stat-card" onClick={() => navigate("/nurse-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/nurse-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Total Nurses</span>
-                <span style={{ fontSize: "20px" }}>👩‍⚕️</span>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Users size={18} color="#2563eb" />
+                </div>
               </div>
               <div className="stat-value">{stats.totalNurses}</div>
               <span style={{ fontSize: "11px", color: "#64748b" }}>Registered staff</span>
             </div>
 
             {/* Nurses On Duty */}
-            <div className="stat-card" onClick={() => navigate("/schedule-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/schedule-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Nurses On Duty</span>
-                <span style={{ fontSize: "20px" }}>🩺</span>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#f0fdfa", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Stethoscope size={18} color="#0ea5e9" />
+                </div>
               </div>
               <div className="stat-value" style={{ color: "#0ea5e9" }}>{stats.nursesOnDuty}</div>
               <span style={{ fontSize: "11px", color: "#64748b" }}>Scheduled today</span>
             </div>
 
             {/* Pending Requests */}
-            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Pending Requests</span>
-                <span style={{ fontSize: "20px" }}>⏳</span>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#fffbeb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Clock size={18} color={stats.pendingRequests > 0 ? "#f59e0b" : "#10b981"} />
+                </div>
               </div>
               <div className="stat-value" style={{ color: stats.pendingRequests > 0 ? "#f59e0b" : "#10b981" }}>
                 {stats.pendingRequests}
@@ -170,10 +204,12 @@ function AdminDashboard() {
             </div>
 
             {/* Open Shifts */}
-            <div className="stat-card" onClick={() => navigate("/schedule-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/schedule-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Open Shifts</span>
-                <span style={{ fontSize: "20px" }}>📋</span>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <ClipboardList size={18} color={stats.openShifts > 0 ? "#ef4444" : "#10b981"} />
+                </div>
               </div>
               <div className="stat-value" style={{ color: stats.openShifts > 0 ? "#ef4444" : "#10b981" }}>
                 {stats.openShifts}
@@ -182,10 +218,12 @@ function AdminDashboard() {
             </div>
 
             {/* Staffing Risk */}
-            <div className="stat-card" onClick={() => navigate("/ai-scheduling")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/ai-scheduling")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Staffing Risk</span>
-                <span style={{ fontSize: "20px" }}>🛡️</span>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <ShieldAlert size={18} color={getRiskColor(stats.staffingRisk)} />
+                </div>
               </div>
               <div className="stat-value" style={{ color: getRiskColor(stats.staffingRisk), fontSize: "22px" }}>
                 {stats.staffingRisk}
@@ -199,13 +237,13 @@ function AdminDashboard() {
             background: "linear-gradient(135deg, #f0fdfa, #eff6ff)",
             border: "1px solid #bfdbfe",
             borderLeft: "4px solid #0ea5e9",
-            borderRadius: "16px",
+            borderRadius: "12px",
             padding: "20px 24px",
             marginBottom: "28px"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "22px" }}>✦</span>
+                <Sparkles size={18} color="#0284c7" />
                 <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#0369a1" }}>
                   AI Workforce Insights & Recommendations
                 </h3>
@@ -216,14 +254,18 @@ function AdminDashboard() {
                   background: "white",
                   border: "1px solid #bae6fd",
                   color: "#0284c7",
-                  padding: "6px 14px",
+                  padding: "8px 14px",
                   borderRadius: "8px",
                   fontSize: "12px",
                   fontWeight: "600",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
                 }}
               >
-                Open AI Optimizer →
+                <span>Open AI Optimizer</span>
+                <ArrowRight size={14} />
               </button>
             </div>
 
@@ -231,8 +273,8 @@ function AdminDashboard() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "14px" }}>
                 {aiInsights.insights.slice(0, 3).map((item, idx) => (
                   <div key={idx} style={{ background: "white", padding: "14px 18px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                      <span>{item.icon || "💡"}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                      {renderInsightIcon(item.type, item.icon)}
                       <strong style={{ fontSize: "13px", color: "#1e293b" }}>{item.type?.replace(/_/g, " ").toUpperCase()}</strong>
                     </div>
                     <p style={{ margin: "4px 0", fontSize: "13px", color: "#475569", lineHeight: "1.4" }}>
@@ -464,8 +506,9 @@ function AdminDashboard() {
               </div>
 
               {staffingAlerts.length === 0 ? (
-                <div style={{ padding: "30px", textAlign: "center", color: "#10b981" }}>
-                  ✅ No critical staffing alerts reported across departments.
+                <div style={{ padding: "30px", textAlign: "center", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                  <CheckCircle2 size={18} />
+                  <span>No critical staffing alerts reported across departments.</span>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -479,7 +522,7 @@ function AdminDashboard() {
                       alignItems: "flex-start",
                       gap: "10px"
                     }}>
-                      <span style={{ fontSize: "18px" }}>{alert.icon || "⚠️"}</span>
+                      <AlertTriangle size={18} color={alert.severity === "High" ? "#dc2626" : "#d97706"} style={{ flexShrink: 0, marginTop: "2px" }} />
                       <div>
                         <strong style={{ fontSize: "13px", color: alert.severity === "High" ? "#991b1b" : "#92400e" }}>
                           {alert.severity} Alert

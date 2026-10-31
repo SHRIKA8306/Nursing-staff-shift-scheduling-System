@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Bell, Menu, CalendarDays } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Bell, CalendarDays } from "lucide-react";
 import NurseSidebar from "../components/NurseSidebar";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
@@ -7,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/LeaveManagement.css";
 
 function LeaveManagement() {
+  const navigate = useNavigate();
   const { user, token, role, unreadCount } = useAuth();
 
   const [activeTab, setActiveTab] = useState(role === 'admin' ? "history" : "apply");
@@ -120,34 +122,42 @@ function LeaveManagement() {
   const nurseEmpId = user ? user.employeeId || "EMP-001" : "EMP-001";
 
   return (
-    <div className="leave-page">
+    <div className="nurse-layout">
       {/* SIDEBAR */}
       {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       {/* MAIN AREA */}
-      <main className="leave-main">
+      <main className="nurse-main">
         {/* TOP HEADER */}
         <header className="nurse-header">
           <div className="header-left">
-            <button className="menu-toggle" type="button"><Menu size={25} /></button>
-            <div className="header-welcome">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+            <div className="welcome-text">
+              <h1>Leave Management</h1>
+              <p>{role === 'admin' ? "Review and manage nurse leave requests · NurseSync AI" : "Apply for leave and track your application status"}</p>
             </div>
           </div>
 
-          <div className="header-right">
-            <button className="header-notification" type="button"><Bell size={21} /><span>{unreadCount || 0}</span></button>
-            <div className="header-avatar">{nurseName.substring(0, 2).toUpperCase()}</div>
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              type="button"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={20} /><span>{unreadCount || 0}</span>
+            </button>
+            {role !== 'admin' && (
+              <div className="header-avatar" onClick={() => navigate("/profile")}>
+                {nurseName.substring(0, 2).toUpperCase()}
+              </div>
+            )}
           </div>
         </header>
 
         {/* PAGE CONTENT */}
-        <div className="leave-content">
-          <div className="leave-heading">
-            <h1>Leave Management</h1>
-            <p>{role === 'admin' ? "Review and manage nurse leave requests" : "Apply for leave and track your application status"}</p>
-          </div>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="leave-content" style={{ padding: 0 }}>
 
           {/* LEAVE BALANCE CARDS */}
           <div className="leave-balance-grid">
@@ -323,15 +333,8 @@ function LeaveManagement() {
             </section>
           )}
         </div>
+        </div>
 
-        {/* FOOTER */}
-        <footer className="nurse-footer">
-          <span>© 2026 NurseSync AI · Nurse Portal</span>
-          <span className="system-status">
-            <span className="status-dot"></span>
-            System Online
-          </span>
-        </footer>
       </main>
 
       {/* Override Rule Engine Modal */}

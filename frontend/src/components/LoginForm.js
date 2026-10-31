@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import RoleSelector from "./RoleSelector";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -101,8 +102,8 @@ function LoginForm() {
 
       {/* Error Banner */}
       {errorMessage && (
-        <div className="login-error-banner">
-          <span className="error-icon">⚠️</span>
+        <div className="login-error-banner" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <AlertCircle size={18} style={{ flexShrink: 0 }} />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -143,8 +144,10 @@ function LoginForm() {
             <input
               type="text"
               name="username"
+              id="username"
               value={formData.username}
               onChange={handleChange}
+              placeholder={role === "admin" ? "admin@hospital.org" : "nurse@hospital.org or Employee ID"}
               required
             />
           </div>
@@ -182,8 +185,10 @@ function LoginForm() {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
+              id="password"
               value={formData.password}
               onChange={handleChange}
+              placeholder="Enter your password"
               required
             />
 
@@ -191,8 +196,9 @@ function LoginForm() {
               type="button"
               className="password-toggle"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? "👁️‍🗨️" : "👁️"}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
         </div>

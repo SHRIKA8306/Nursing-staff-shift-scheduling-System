@@ -14,7 +14,7 @@
   overflow: hidden;
   background: #f6f8fb;
   color: #142846;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-main, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
 }
 
 
@@ -460,13 +460,15 @@
 
   background: white;
 
-  border: 1px solid #dce4ed;
+  border: 1px solid #e2e8f0;
 
-  border-radius: 18px;
+  border-radius: 12px;
 
-  padding: 26px 25px;
+  padding: 24px;
 
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
 }
 
 .settings-card h2 {
@@ -700,45 +702,51 @@
 }
 
 .appearance-button {
-  height: 58px;
+  height: 42px;
 
-  min-width: 124px;
+  min-width: 110px;
 
-  padding: 0 18px;
+  padding: 0 16px;
 
-  border-radius: 14px;
+  border-radius: 10px;
 
-  border: 1px solid #dce4ed;
+  border: 1px solid #cbd5e1;
 
   background: white;
 
-  color: #5d7491;
+  color: #475569;
 
-  font-size: 16px;
+  font-size: 14px;
+
+  font-weight: 500;
 
   cursor: pointer;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
   gap: 8px;
 
-  transition: 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .appearance-button:hover {
-  border-color: #477af0;
+  border-color: #2563eb;
 
-  color: #2d67e8;
+  color: #2563eb;
+
+  background: #f8fafc;
 }
 
 .appearance-button.selected {
-  border: 1px solid #2b65f1;
+  border: 1px solid #2563eb;
 
-  color: #2b65e9;
+  color: #2563eb;
 
-  background: #fbfcff;
+  background: #eff6ff;
+
+  font-weight: 600;
 }
 
 

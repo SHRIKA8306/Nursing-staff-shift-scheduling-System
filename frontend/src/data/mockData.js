@@ -1,16 +1,16 @@
 export const DEPARTMENTS = [
-  { id: 'ICU', name: 'Intensive Care Unit', code: 'ICU', color: '#ef4444', icon: '🫀', reqRatio: '1:2' },
-  { id: 'ER', name: 'Emergency Room', code: 'ER', color: '#f59e0b', icon: '🚨', reqRatio: '1:4' },
-  { id: 'PEDS', name: 'Pediatrics Ward', code: 'PEDS', color: '#10b981', icon: '👶', reqRatio: '1:4' },
-  { id: 'OR', name: 'Surgical / OR', code: 'OR', color: '#8b5cf6', icon: '🏥', reqRatio: '1:1' },
-  { id: 'MEDSURG', name: 'Medical-Surgical', code: 'MEDSURG', color: '#3b82f6', icon: '💉', reqRatio: '1:6' },
-  { id: 'TELE', name: 'Telemetry Unit', code: 'TELE', color: '#ec4899', icon: '📡', reqRatio: '1:4' },
+  { id: 'ICU', name: 'Intensive Care Unit', code: 'ICU', color: '#ef4444', icon: 'ICU', reqRatio: '1:2' },
+  { id: 'ER', name: 'Emergency Room', code: 'ER', color: '#f59e0b', icon: 'ER', reqRatio: '1:4' },
+  { id: 'PEDS', name: 'Pediatrics Ward', code: 'PEDS', color: '#10b981', icon: 'PEDS', reqRatio: '1:4' },
+  { id: 'OR', name: 'Surgical / OR', code: 'OR', color: '#8b5cf6', icon: 'OR', reqRatio: '1:1' },
+  { id: 'MEDSURG', name: 'Medical-Surgical', code: 'MEDSURG', color: '#3b82f6', icon: 'MEDSURG', reqRatio: '1:6' },
+  { id: 'TELE', name: 'Telemetry Unit', code: 'TELE', color: '#ec4899', icon: 'TELE', reqRatio: '1:4' },
 ];
 
 export const SHIFT_TIMES = {
-  Morning: { name: 'Morning Shift', hours: '06:00 - 14:00', icon: '☀️', color: '#f59e0b' },
-  Evening: { name: 'Evening Shift', hours: '14:00 - 22:00', icon: '🌅', color: '#6366f1' },
-  Night: { name: 'Night Shift', hours: '22:00 - 06:00', icon: '🌙', color: '#14b8a6' },
+  Morning: { name: 'Morning Shift', hours: '06:00 - 14:00', icon: 'Morning', color: '#f59e0b' },
+  Evening: { name: 'Evening Shift', hours: '14:00 - 22:00', icon: 'Evening', color: '#6366f1' },
+  Night: { name: 'Night Shift', hours: '22:00 - 06:00', icon: 'Night', color: '#14b8a6' },
 };
 
 export const INITIAL_NURSES = [

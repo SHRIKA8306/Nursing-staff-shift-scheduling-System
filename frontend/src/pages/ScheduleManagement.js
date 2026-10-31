@@ -261,7 +261,7 @@ function ScheduleManagement() {
           </div>
         </header>
 
-        <div style={{ padding: "0 32px 32px" }}>
+        <div style={{ padding: "24px 32px 32px" }}>
           {/* Quick Metrics */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
             <div className="stat-card">

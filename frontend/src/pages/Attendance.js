@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Bell, Menu, CircleHelp, LogIn, LogOut, CheckCircle, Timer } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Bell, CircleHelp, LogIn, LogOut, CheckCircle, Timer } from "lucide-react";
 import NurseSidebar from "../components/NurseSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
@@ -7,8 +8,8 @@ import { getInitials } from "../utils/helpers";
 import "../styles/Attendance.css";
 
 function Attendance() {
+  const navigate = useNavigate();
   const { user, token, unreadCount } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [attendanceData, setAttendanceData] = useState([]);
   const [checkedIn, setCheckedIn] = useState(false);
   const [activeAttendanceId, setActiveAttendanceId] = useState(null);
@@ -87,34 +88,36 @@ function Attendance() {
   };
 
   return (
-    <div className="attendance-layout">
+    <div className="nurse-layout">
       <NurseSidebar />
-      {sidebarOpen && <div className="attendance-overlay" onClick={() => setSidebarOpen(false)} />}
-      
-      <main className="attendance-main">
-        <header className="attendance-header">
-          <div className="attendance-header-left">
-            <button className="attendance-menu-button" onClick={() => setSidebarOpen(true)}>
-              <Menu size={25} />
-            </button>
-            <div className="attendance-welcome">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+
+      <main className="nurse-main">
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>My Attendance</h1>
+              <p>View your check-in history and attendance reports · {nurseName}</p>
             </div>
           </div>
-          <div className="attendance-header-right">
-            <button className="attendance-notification">
-              <Bell size={21} /><span>{unreadCount || 0}</span>
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              type="button"
+              className="header-notification"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={20} />
+              <span>{unreadCount || 0}</span>
             </button>
-            <div className="attendance-avatar">{getInitials(nurseName)}</div>
+            <div className="header-avatar" onClick={() => navigate("/profile")}>
+              {getInitials(nurseName)}
+            </div>
           </div>
         </header>
 
-        <div className="attendance-content">
-          <div className="attendance-page-heading">
-            <h1>My Attendance</h1>
-            <p>View your check-in history and attendance reports — {nurseName}</p>
-          </div>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="attendance-content" style={{ padding: 0 }}>
 
           <section className="today-attendance-card">
             <h2>Today — {todayDateString}</h2>
@@ -211,11 +214,8 @@ function Attendance() {
             </div>
           </section>
         </div>
+        </div>
 
-        <footer className="attendance-footer">
-          <span>© 2026 NurseSync AI · Nurse Portal</span>
-          <span className="attendance-system-status"><span></span>System Online</span>
-        </footer>
       </main>
       <button className="attendance-help-button"><CircleHelp size={23} /></button>
     </div>

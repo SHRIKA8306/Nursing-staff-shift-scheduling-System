@@ -369,7 +369,7 @@ router.get('/insights', auth, async (req, res) => {
       insights.push({
         type: 'staffing_alert',
         severity: 'High',
-        icon: '🚨',
+        icon: 'alert',
         message: `Potential staffing shortage detected in ${lowStaffingDepts.join(', ')} for today's shifts.`,
         action: 'Review and assign additional nurses to cover these departments.'
       });
@@ -379,7 +379,7 @@ router.get('/insights', auth, async (req, res) => {
       insights.push({
         type: 'leave_alert',
         severity: 'Medium',
-        icon: '📅',
+        icon: 'calendar',
         message: `${upcomingLeaves.length} nurses have approved leave during the next 7 days. Peak coverage may be affected.`,
         action: 'Consider AI scheduling to redistribute shifts for the leave period.'
       });
@@ -396,7 +396,7 @@ router.get('/insights', auth, async (req, res) => {
         insights.push({
           type: 'workload_alert',
           severity: 'Medium',
-          icon: '🌙',
+          icon: 'moon',
           message: `${heavyNight} nurse(s) have 3+ night shifts scheduled this week. High fatigue risk detected.`,
           action: 'Redistribute night shifts to improve workload balance and prevent burnout.'
         });
@@ -413,7 +413,7 @@ router.get('/insights', auth, async (req, res) => {
       insights.push({
         type: 'open_shift',
         severity: 'High',
-        icon: '⚠️',
+        icon: 'warning',
         message: `${openShifts} open shifts still need nurse assignments in the upcoming schedule.`,
         action: 'Use AI Scheduling to auto-assign nurses to open shifts.'
       });
@@ -423,7 +423,7 @@ router.get('/insights', auth, async (req, res) => {
       insights.push({
         type: 'all_clear',
         severity: 'Low',
-        icon: '✅',
+        icon: 'check',
         message: `All departments are adequately staffed. Current workforce distribution looks optimal.`,
         action: null
       });

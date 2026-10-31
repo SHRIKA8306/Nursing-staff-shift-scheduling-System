@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import { useAuth } from "../context/AuthContext";
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import "../App.css";
 
 const DEPARTMENTS = ["All", "ICU", "Emergency", "General Ward", "Pediatrics", "Cardiology"];
@@ -267,7 +268,7 @@ function AIScheduling() {
           </div>
         </header>
 
-        <div style={{ padding: "0 32px 32px" }}>
+        <div style={{ padding: "24px 32px 32px" }}>
 
           {/* Tab Navigation */}
           <div style={{
@@ -577,7 +578,9 @@ function AIScheduling() {
 
                   {conflictResult.conflicts.length === 0 ? (
                     <div className="card" style={{ padding: "48px", textAlign: "center" }}>
-                      <div style={{ fontSize: "48px", marginBottom: "12px" }}>✅</div>
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                        <CheckCircle2 size={44} color="#10b981" />
+                      </div>
                       <h3 style={{ color: "#10b981" }}>No Conflicts Detected</h3>
                       <p style={{ color: "#64748b" }}>The schedule for the selected period is clean with no violations.</p>
                     </div>
@@ -594,9 +597,9 @@ function AIScheduling() {
                           alignItems: "flex-start",
                           gap: "14px"
                         }}>
-                          <span style={{ fontSize: "22px", lineHeight: 1 }}>
-                            {c.severity === "Critical" ? "🚨" : c.severity === "High" ? "⚠️" : "💛"}
-                          </span>
+                          <div style={{ flexShrink: 0, marginTop: "2px" }}>
+                            <AlertTriangle size={20} color={c.severity === "Critical" ? "#dc2626" : c.severity === "High" ? "#ea580c" : "#ca8a04"} />
+                          </div>
                           <div style={{ flex: 1 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
                               <Badge label={c.severity} type={c.severity} />

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import NurseSidebar from "../components/NurseSidebar";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
@@ -15,6 +16,7 @@ import { getInitials } from "../utils/helpers";
 import "../styles/Notifications.css";
 
 function Notifications() {
+  const navigate = useNavigate();
   const { user, token, role, unreadCount, setUnreadCount } = useAuth();
   const [activeFilter, setActiveFilter] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -76,72 +78,44 @@ function Notifications() {
   };
 
   return (
-    <div className="notifications-page">
-
+    <div className="nurse-layout">
       {/* SIDEBAR */}
       {role === 'admin' ? <AdminSidebar /> : <NurseSidebar />}
 
       {/* MAIN AREA */}
-      <div className="notifications-main">
-
+      <main className="nurse-main">
         {/* TOP HEADER */}
-        <header className="notifications-header">
-          <div className="notifications-header-left">
-            <button
-              className="notifications-menu-button"
-              type="button"
-            >
-              ☰
-            </button>
-
-            <div className="notifications-welcome">
-              <h3>Welcome back, {nurseName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>Notifications</h1>
+              <p>{unreadCount || 0} unread notifications · NurseSync AI</p>
             </div>
           </div>
 
-          <div className="notifications-header-right">
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
             <button
-              className="notifications-bell"
+              className="header-notification"
               type="button"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
             >
-              <Bell size={22} />
-
-              {unreadCount > 0 && (
-                <span className="header-notification-count">
-                  {unreadCount}
-                </span>
-              )}
+              <Bell size={20} />
+              <span>{unreadCount || 0}</span>
             </button>
 
-            <div className="notifications-avatar">
-              {getInitials(nurseName)}
-            </div>
+            {role !== 'admin' && (
+              <div className="header-avatar" onClick={() => navigate("/profile")}>
+                {getInitials(nurseName)}
+              </div>
+            )}
           </div>
         </header>
 
-
-        {/* ==========================================
-            PAGE CONTENT
-        ========================================== */}
-
-        <main className="notifications-content">
-
-          {/* Page heading */}
-
-          <div className="notifications-title-row">
-
-            <div>
-
-              <h1>
-                Notifications
-              </h1>
-
-              <p>
-                {unreadCount} unread notifications
-              </p>
-
-            </div>
+        {/* PAGE CONTENT */}
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="notifications-content" style={{ padding: 0 }}>
 
             <button
               className="mark-read-button"
@@ -151,7 +125,6 @@ function Notifications() {
             </button>
 
           </div>
-
 
           {/* ==========================================
               FILTERS
@@ -179,7 +152,6 @@ function Notifications() {
             ))}
 
           </div>
-
 
           {/* ==========================================
               NOTIFICATION LIST
@@ -313,32 +285,13 @@ function Notifications() {
 
           </section>
 
-        </main>
-
+        </div>
 
         {/* ==========================================
             FOOTER
         ========================================== */}
 
-        <footer className="notifications-footer">
-
-          <span>
-            © 2026 NurseSync AI · Nurse Portal
-          </span>
-
-          <span className="system-status">
-
-            <span className="system-dot"></span>
-
-            System Online
-
-          </span>
-
-        </footer>
-
-
         {/* Help button */}
-
         <button
           className="notifications-help-button"
           type="button"
@@ -346,7 +299,7 @@ function Notifications() {
           <CircleHelp size={24} />
         </button>
 
-      </div>
+      </main>
 
     </div>
   );

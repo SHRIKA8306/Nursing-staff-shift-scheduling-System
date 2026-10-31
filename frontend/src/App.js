@@ -20,8 +20,6 @@ import AdminAttendance from "./pages/AdminAttendance";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
-import AdminReports from "./pages/AdminReports";
-import AuditLogs from "./pages/AuditLogs";
 import AIScheduling from "./pages/AIScheduling";
 
 function App() {
@@ -46,22 +44,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <NurseManagement />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin-reports"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminReports />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/audit-logs"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AuditLogs />
               </ProtectedRoute>
             }
           />

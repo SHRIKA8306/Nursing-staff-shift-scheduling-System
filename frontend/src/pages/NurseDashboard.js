@@ -7,7 +7,10 @@ import {
   Calendar,
   CheckCircle2,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Timer,
+  Plus,
+  ArrowLeftRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NurseSidebar from "../components/NurseSidebar";
@@ -108,7 +111,7 @@ function NurseDashboard() {
         <header className="nurse-header">
           <div className="header-left">
             <div className="welcome-text">
-              <h1>Welcome back, {nurseName} 👋</h1>
+              <h1>Welcome back, {nurseName}</h1>
               <p>Department: {nurseDept} · Employee ID: {nurseEmpId}</p>
             </div>
           </div>
@@ -129,13 +132,13 @@ function NurseDashboard() {
           </div>
         </header>
 
-        <div style={{ padding: "0 32px 32px" }}>
+        <div style={{ padding: "24px 32px 32px" }}>
 
           {/* TOP METRICS (Spec 4: Today's Shift, Next Shift, Working Hours, Attendance, Leave Balance, Pending Requests, Notifications) */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "28px" }}>
             
             {/* Today's Shift */}
-            <div className="stat-card" onClick={() => navigate("/my-schedule")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/my-schedule")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Today's Shift</span>
                 <Clock size={18} color="#0ea5e9" />
@@ -149,7 +152,7 @@ function NurseDashboard() {
             </div>
 
             {/* Next Shift */}
-            <div className="stat-card" onClick={() => navigate("/my-schedule")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/my-schedule")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Next Shift</span>
                 <Calendar size={18} color="#8b5cf6" />
@@ -163,10 +166,10 @@ function NurseDashboard() {
             </div>
 
             {/* Working Hours */}
-            <div className="stat-card">
+            <div className="stat-card" style={{ borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Working Hours</span>
-                <span style={{ fontSize: "18px" }}>⏱️</span>
+                <Timer size={18} color="#10b981" />
               </div>
               <div className="stat-value" style={{ color: "#10b981" }}>
                 {totalWeeklyHours}h
@@ -175,7 +178,7 @@ function NurseDashboard() {
             </div>
 
             {/* Attendance Status */}
-            <div className="stat-card" onClick={() => navigate("/attendance")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/attendance")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Attendance</span>
                 <CheckCircle2 size={18} color="#16a34a" />
@@ -189,7 +192,7 @@ function NurseDashboard() {
             </div>
 
             {/* Leave Balance */}
-            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Leave Balance</span>
                 <FileText size={18} color="#f59e0b" />
@@ -201,7 +204,7 @@ function NurseDashboard() {
             </div>
 
             {/* Pending Requests */}
-            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer" }}>
+            <div className="stat-card" onClick={() => navigate("/leave-management")} style={{ cursor: "pointer", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="stat-label">Pending Requests</span>
                 <AlertCircle size={18} color={pendingRequests.length > 0 ? "#ea580c" : "#10b981"} />
@@ -339,24 +342,43 @@ function NurseDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                   <button
                     onClick={() => navigate("/leave-management")}
-                    className="btn-primary"
-                    style={{ fontSize: "12px", padding: "10px 12px" }}
+                    style={{
+                      background: "#2563eb",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "8px",
+                      height: "40px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      cursor: "pointer"
+                    }}
                   >
-                    + Request Leave
+                    <Plus size={15} />
+                    <span>Request Leave</span>
                   </button>
                   <button
                     onClick={() => navigate("/shift-swap")}
                     style={{
-                      background: "#f1f5f9",
+                      background: "#f8fafc",
                       border: "1px solid #cbd5e1",
                       borderRadius: "8px",
+                      height: "40px",
                       color: "#334155",
                       fontWeight: "600",
-                      fontSize: "12px",
+                      fontSize: "13px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
                       cursor: "pointer"
                     }}
                   >
-                    ⇄ Request Swap
+                    <ArrowLeftRight size={15} />
+                    <span>Request Swap</span>
                   </button>
                 </div>
               </div>

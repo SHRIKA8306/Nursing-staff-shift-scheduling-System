@@ -1,20 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
-import { Bell, Menu, CircleHelp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Bell, CircleHelp } from "lucide-react";
 import AdminSidebar from "../components/AdminSidebar";
 import LiveClock from "../components/LiveClock";
 import { useAuth } from "../context/AuthContext";
-import { getInitials } from "../utils/helpers";
 import "../styles/Attendance.css";
 
 function AdminAttendance() {
-  const { user, token, unreadCount } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const { token, unreadCount } = useAuth();
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const adminName = user ? user.username : "Administrator";
-
-  const fetchAttendance = useCallback(async () => {
+const fetchAttendance = useCallback(async () => {
     try {
       const res = await fetch("/api/attendance", {
         headers: { Authorization: `Bearer ${token}` }
@@ -49,34 +47,31 @@ function AdminAttendance() {
   };
 
   return (
-    <div className="attendance-layout">
+    <div className="nurse-layout">
       <AdminSidebar />
-      {sidebarOpen && <div className="attendance-overlay" onClick={() => setSidebarOpen(false)} />}
       
-      <main className="attendance-main">
-        <header className="attendance-header">
-          <div className="attendance-header-left">
-            <button className="attendance-menu-button" onClick={() => setSidebarOpen(true)}>
-              <Menu size={25} />
-            </button>
-            <div className="attendance-welcome">
-              <h3>Welcome back, {adminName}! 👋</h3>
-              <LiveClock showDate={true} showTime={true} className="dark" />
+      <main className="nurse-main">
+        <header className="nurse-header">
+          <div className="header-left">
+            <div className="welcome-text">
+              <h1>Staff Attendance Report</h1>
+              <p>View all staff check-in history and timesheets · NurseSync AI</p>
             </div>
           </div>
-          <div className="attendance-header-right">
-            <button className="attendance-notification">
-              <Bell size={21} /><span>{unreadCount || 0}</span>
+          <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+            <LiveClock showDate={true} showTime={true} />
+            <button
+              className="header-notification"
+              onClick={() => navigate("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={18} /><span>{unreadCount || 0}</span>
             </button>
-            <div className="attendance-avatar">{getInitials(adminName)}</div>
           </div>
         </header>
 
-        <div className="attendance-content">
-          <div className="attendance-page-heading">
-            <h1>Staff Attendance Report</h1>
-            <p>View all staff check-in history and timesheets</p>
-          </div>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <div className="attendance-content" style={{ padding: 0 }}>
 
           <section className="weekly-attendance-card">
             <div className="weekly-attendance-header">
@@ -127,11 +122,8 @@ function AdminAttendance() {
             </div>
           </section>
         </div>
+        </div>
 
-        <footer className="attendance-footer">
-          <span>© 2026 NurseSync AI · Admin Portal</span>
-          <span className="attendance-system-status"><span></span>System Online</span>
-        </footer>
       </main>
       <button className="attendance-help-button"><CircleHelp size={23} /></button>
     </div>

@@ -98,7 +98,7 @@ function MySchedule() {
           </div>
         </header>
 
-        <div style={{ padding: "0 32px 32px" }}>
+        <div style={{ padding: "24px 32px 32px" }}>
           
           {/* Shift Schedule Policy Banner (Spec 5 example shifts) */}
           <div style={{

@@ -1,3 +1,6 @@
+import React from "react";
+import { Shield, Stethoscope } from "lucide-react";
+
 function RoleSelector({ role, setRole }) {
   return (
     <div className="role-selector">
@@ -9,7 +12,9 @@ function RoleSelector({ role, setRole }) {
         }`}
         onClick={() => setRole("admin")}
       >
-        <span className="role-icon">👩🏻‍💼</span>
+        <span className="role-icon" style={{ display: "inline-flex", alignItems: "center" }}>
+          <Shield size={18} />
+        </span>
         <span>Administrator</span>
       </button>
 
@@ -20,7 +25,9 @@ function RoleSelector({ role, setRole }) {
         }`}
         onClick={() => setRole("nurse")}
       >
-        <span className="role-icon">👩🏻‍⚕️</span>
+        <span className="role-icon" style={{ display: "inline-flex", alignItems: "center" }}>
+          <Stethoscope size={18} />
+        </span>
         <span>Nurse</span>
       </button>
 
@@ -28,4 +35,4 @@ function RoleSelector({ role, setRole }) {
   );
 }
 
-export default RoleSelector;
+export default RoleSelector;
