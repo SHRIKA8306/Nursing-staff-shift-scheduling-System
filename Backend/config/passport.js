@@ -4,7 +4,7 @@ const { User } = require('../model/user');
 
 const clientID = process.env.GOOGLE_CLIENT_ID;
 const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const callbackURL = process.env.GOOGLE_REDIRECT_URL || 'http://localhost:5000/api/auth/google/callback';
+const callbackURL = process.env.GOOGLE_REDIRECT_URL || (process.env.NODE_ENV === 'production' ? 'https://nursesyncai.onrender.com/api/auth/google/callback' : 'http://localhost:5000/api/auth/google/callback');
 
 if (clientID && clientID !== 'YOUR_GOOGLE_CLIENT_ID' && clientSecret && clientSecret !== 'YOUR_GOOGLE_CLIENT_SECRET') {
   passport.use(

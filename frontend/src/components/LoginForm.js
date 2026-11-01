@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 
+const API_BASE = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace(/\/$/, '') : '';
+
 function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +33,7 @@ function LoginForm() {
       setErrorMessage(decodeURIComponent(errorParam));
     } else if (tokenParam && roleParam) {
       // Authenticated via Google callback
-      fetch('/api/auth/me', {
+      fetch(`${API_BASE}/api/auth/me`, {
         headers: { 'Authorization': `Bearer ${tokenParam}` }
       })
         .then(res => res.json())
@@ -55,7 +57,7 @@ function LoginForm() {
   };
 
   const handleGoogleLoginClick = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const handleSubmit = async (e) => {

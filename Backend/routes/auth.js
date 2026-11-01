@@ -271,7 +271,7 @@ router.post('/google-verify', async (req, res) => {
 // @route   GET /api/auth/google/callback
 // @desc    Google OAuth redirect callback - Checks registered nurse status
 router.get('/google/callback', (req, res, next) => {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://nursesyncai.netlify.app' : 'http://localhost:3000');
 
   passport.authenticate('google', { session: false }, async (err, user, info) => {
     if (err || !user) {
