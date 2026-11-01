@@ -1,70 +1,116 @@
-# Getting Started with Create React App
+## 🌐 Live Deployments
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- 🚀 **Frontend Web Application**: [https://nursesyncai.netlify.app](https://nursesyncai.netlify.app)
+- ⚡ **Backend API Server**: [https://nursesyncai.onrender.com](https://nursesyncai.onrender.com)
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📖 Overview
 
-### `npm start`
+**NurseSync AI** is a full-stack, enterprise-grade healthcare workforce management platform built to solve the complex operational challenges of hospital staffing and nurse shift scheduling.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Hospitals operate 24/7/365 across mission-critical departments (ICU, Emergency, Pediatrics, Oncology, Surgery, General Ward). Scheduling nursing staff manually leads to nurse burnout, unfair shift distribution, accidental compliance violations, and understaffed shifts.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+NurseSync AI provides an **automated, role-based, intelligent scheduling ecosystem** featuring dedicated portals for **Hospital Administrators/Head Nurses** and **Nursing Staff**, real-time live attendance logging, certified skill-based shift allocation, transparent leave/swap approval workflows, and audit-proof logging.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Key Features
 
-### `npm run build`
+### 👨‍⚕️ Nurse Portal
+- **Dashboard**: Next shift countdown, weekly schedule snapshot, and quick clock-in widget.
+- **My Schedule**: Visual calendar and agenda view showing assigned wards, shift timings, and duty partners.
+- **Attendance & Timesheets**: Personal history of logged hours and verification of worked shifts.
+- **Shift Swap Marketplace**: Propose mutual exchanges with eligible colleagues without administrative friction.
+- **Leave Requests**: View remaining leave balances and submit time-off requests with date pickers.
+- **Profile & Certifications**: View employee credentials, emergency contacts, specialized skills, and license expiry dates.
+- **Notifications Hub**: In-app notifications with badge counters and single-click read markers.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🛡️ Admin Control Portal
+- **Executive Dashboard**: Real-time department headcount, pending leaves, open swap requests, and staff distribution.
+- **Nurse Directory**: Searchable directory filtered by department (ICU, ER, General Ward, etc.).
+- **Schedule Management**: Master visual rota view for assigning, editing, or deleting shifts across rotations.
+- **Attendance Reports**: Hospital-wide timesheet log with exact check-in/out timestamps and automatic hour calculation.
+- **Leave & Swap Approvals**: Structured review queues for time-off and peer shift-swap approvals.
+- **AI Scheduling Assistant**: Automated allocation engine balancing shift loads, leaves, and night duties.
+- **Audit Logs**: Immutable security journal tracking all sensitive administrative actions.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠️ Technology Stack
 
-### `npm run eject`
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, React Router DOM v7, Lucide Icons, Pure Modular CSS |
+| **Backend** | Node.js, Express.js, Mongoose ODM, Passport.js, JWT, Bcrypt |
+| **Database** | MongoDB Atlas (Cloud Database) |
+| **Authentication**| JWT Stateless Auth & Google OAuth 2.0 |
+| **Hosting** | Netlify (Frontend SPA), Render (Backend Web Service) |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Local Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 1. Prerequisites
+- **Node.js** (v18+)
+- **npm** (v9+)
+- **MongoDB** running locally or a MongoDB Atlas Cloud URI
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 2. Clone and Install Dependencies
+```bash
+git clone https://github.com/SHRIKA8306/Nurse_Shift_Scheduling.git
+cd Nurse_Shift_Scheduling
 
-## Learn More
+# Install backend and frontend dependencies:
+npm install --prefix Backend && npm install --prefix frontend
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 3. Environment Variables
+Create a `.env` file inside the `Backend/` directory:
+```env
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+DB=mongodb://127.0.0.1:27017/nurse_shift_db
+MONGO_URI=mongodb://127.0.0.1:27017/nurse_shift_db
+JWT_SECRET=your_jwt_secret_key
+SESSION_SECRET=your_session_secret_key
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Seed Default Database (Admin & Nurses)
+```bash
+cd Backend
+node seeder.js
+```
 
-### Code Splitting
+### 5. Run the Application
+Open two terminals:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**Terminal 1 (Backend):**
+```bash
+cd Backend
+npm run dev
+# Server running at http://localhost:5000
+```
 
-### Analyzing the Bundle Size
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm start
+# Client running at http://localhost:3000
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🔒 Default Demo Credentials
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+| Role | Username / Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin` / `admin@hospital.com` | `admin123` |
+| **Nurse** | `nurse_sarah` | `nurse123` |
+| **Nurse** | `nurse_john` | `nurse123` |
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📄 License
+This project is licensed under the MIT License.
